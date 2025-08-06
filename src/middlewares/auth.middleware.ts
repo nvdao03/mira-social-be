@@ -1,6 +1,8 @@
 import { checkSchema } from 'express-validator'
+import { HTTP_STATUS } from '~/constants/httpStatus'
 import { MESSAGE } from '~/constants/message'
 import authService from '~/services/auth.service'
+import { ErrorStatus } from '~/utils/Errors'
 import { validate } from '~/utils/validation'
 
 export const signUpValidation = validate(
@@ -15,7 +17,10 @@ export const signUpValidation = validate(
         options: async (value) => {
           const isEmail = await authService.checkEmailExits(value)
           if (isEmail) {
-            throw new Error(MESSAGE.EMAIL_ALREADY_EXISTS)
+            throw new ErrorStatus({
+              status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+              message: MESSAGE.EMAIL_ALREADY_EXISTS
+            })
           }
           return true
         }

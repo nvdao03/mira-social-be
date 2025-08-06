@@ -1,5 +1,12 @@
-export enum USER_VERIFY_STATUS {
-  Unverified,
-  Verified,
+export enum UserVerifyStatus {
+  Unverifyed,
+  Verifyed,
   Banned
+}
+
+export enum TokenTypes {
+  AccessToken,
+  RefreshToken,
+  ResetPasswordToken,
+  EmailVerifyToken
 }

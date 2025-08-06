@@ -1,4 +1,4 @@
-import { USER_VERIFY_STATUS } from '~/constants/enums'
+import { UserVerifyStatus } from '~/constants/enums'
 import { ObjectId } from './../../node_modules/bson/src/objectid'
 import mongoose from 'mongoose'
 
@@ -65,8 +65,8 @@ const UserShema = new mongoose.Schema(
     },
     verify: {
       type: Number,
-      enum: [USER_VERIFY_STATUS.Unverified, USER_VERIFY_STATUS.Verified, USER_VERIFY_STATUS.Banned],
-      default: USER_VERIFY_STATUS.Unverified
+      enum: [UserVerifyStatus.Unverifyed, UserVerifyStatus.Verifyed, UserVerifyStatus.Banned],
+      default: UserVerifyStatus.Unverifyed
     },
     location: {
       type: String,
