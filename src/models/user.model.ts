@@ -1,21 +1,14 @@
 import { UserVerifyStatus } from '~/constants/enums'
-import { ObjectId } from './../../node_modules/bson/src/objectid'
 import mongoose from 'mongoose'
 
 const UserShema = new mongoose.Schema(
   {
-    _id: {
-      type: ObjectId,
-      unique: true,
-      required: [true, 'Id is required'],
-      default: () => new ObjectId()
-    },
     email: {
       type: String,
       required: [true, 'Email is required'],
       unique: [true, 'Email must be unique'],
       trim: true,
-      indexedDB: true
+      index: true
     },
     password: {
       type: String,
@@ -23,7 +16,7 @@ const UserShema = new mongoose.Schema(
       trim: true,
       min: [6, 'Password must be at least 6 characters'],
       max: [180, 'Password must be at most 180 characters'],
-      indexedDB: true
+      index: true
     },
     username: {
       type: String,
@@ -32,7 +25,7 @@ const UserShema = new mongoose.Schema(
       trim: true,
       min: [3, 'Username must be at least 3 characters'],
       max: [50, 'Username must be at most 50 characters'],
-      indexedDB: true
+      index: true
     },
     name: {
       type: String,
@@ -54,11 +47,6 @@ const UserShema = new mongoose.Schema(
       default: ''
     },
     forgot_password_token: {
-      type: String,
-      trim: true,
-      default: ''
-    },
-    reset_password_token: {
       type: String,
       trim: true,
       default: ''

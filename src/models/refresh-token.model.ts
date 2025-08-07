@@ -4,7 +4,6 @@ export const RefreshTokenSchema = new mongoose.Schema(
   {
     token: {
       type: String,
-      unique: [true, 'Refresh token must be unique'],
       trim: true
     },
     user_id: {
