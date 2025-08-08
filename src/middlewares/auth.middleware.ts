@@ -1,10 +1,13 @@
 import { checkSchema } from 'express-validator'
+import { JsonWebTokenError } from 'jsonwebtoken'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { MESSAGE } from '~/constants/message'
+import { RefreshTokenModel } from '~/models/refresh-token.model'
 import { UserModel } from '~/models/user.model'
 import authService from '~/services/auth.service'
 import hasspassword from '~/utils/crypto'
 import { ErrorStatus } from '~/utils/Errors'
+import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
 
 export const signUpValidation = validate(
@@ -114,6 +117,87 @@ export const signInValidation = validate(
           errorMessage: MESSAGE.PASSWORD_LENGTH
         },
         trim: true
+      }
+    },
+    ['body']
+  )
+)
+
+export const accessTokenValidator = validate(
+  checkSchema(
+    {
+      Authorization: {
+        custom: {
+          options: async (value: string, { req }) => {
+            const accessToken = (value || '').split(' ')[1]
+            if (!accessToken) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: MESSAGE.ACCESS_TOKEN_REQUIRED
+              })
+            }
+            try {
+              const decoded_authorization = await verifyToken({
+                token: accessToken,
+                secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
+              })
+              req.decoded_authorization = decoded_authorization
+            } catch (error) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: MESSAGE.ACCESS_TOKEN_NOT_FOUND
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['headers']
+  )
+)
+
+export const refreshTokenValidator = validate(
+  checkSchema(
+    {
+      refresh_token: {
+        isString: true,
+        trim: true,
+        custom: {
+          options: async (value: string, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: MESSAGE.REFRESH_TOKEN_REQUIRED
+              })
+            }
+            const [decoded_refresh_token, refresh_token] = await Promise.all([
+              verifyToken({
+                token: value,
+                secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+              }),
+              RefreshTokenModel.findOne({ token: value })
+            ])
+            try {
+              if (!refresh_token) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: MESSAGE.REFRESH_TOKEN_NOT_FOUND
+                })
+              }
+              req.decoded_refresh_token = decoded_refresh_token
+            } catch (error) {
+              if (error instanceof JsonWebTokenError) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: MESSAGE.REFRESH_TOKEN_REQUIRED
+                })
+              }
+              throw error
+            }
+            return true
+          }
+        }
       }
     },
     ['body']

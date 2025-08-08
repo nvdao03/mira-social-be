@@ -13,5 +13,10 @@ export const MESSAGE = {
   USER_NAME_ALREADY_EXISTS: 'Username already exists',
   USER_NAME_NOT_FOUND: 'Username not found',
   INVALID_EMAIL_OR_PASSWORD: 'Invalid email or password',
-  SIGN_IN_SUCCESSFULLY: 'Sign in successfully'
+  SIGN_IN_SUCCESSFULLY: 'Sign in successfully',
+  ACCESS_TOKEN_REQUIRED: 'Access token is required',
+  ACCESS_TOKEN_NOT_FOUND: 'Access token not found',
+  REFRESH_TOKEN_REQUIRED: 'Refresh token is required',
+  REFRESH_TOKEN_NOT_FOUND: 'Refresh token not found',
+  LOGOUT_SUCCESSFULLY: 'Logout successfully'
 }

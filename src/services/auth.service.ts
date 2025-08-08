@@ -1,9 +1,10 @@
 import { config } from 'dotenv'
 import mongoose from 'mongoose'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enums'
+import { MESSAGE } from '~/constants/message'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
 import { UserModel } from '~/models/user.model'
-import { SignInRequestBody, SignUpRequestBody } from '~/requests/auth.request'
+import { SignUpRequestBody } from '~/requests/auth.request'
 import hasspassword from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 
@@ -105,6 +106,11 @@ class AuthService {
     })
 
     return { access_token, refresh_token, userResponse }
+  }
+
+  async logout(refresh_token: string) {
+    await RefreshTokenModel.deleteOne({ token: refresh_token })
+    return { message: MESSAGE.LOGOUT_SUCCESSFULLY }
   }
 }
 

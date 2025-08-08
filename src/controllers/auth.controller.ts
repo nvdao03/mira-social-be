@@ -4,7 +4,7 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { pick } from 'lodash'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { MESSAGE } from '~/constants/message'
-import { SignInRequestBody, SignUpRequestBody } from '~/requests/auth.request'
+import { LogoutRequest, SignInRequestBody, SignUpRequestBody } from '~/requests/auth.request'
 import authService from '~/services/auth.service'
 
 export const signUpController = async (
@@ -41,4 +41,14 @@ export const signInController = async (
       user: pick(userResponse, ['_id', 'email', 'username', 'name', 'avatar', 'created_at', 'updated_at'])
     }
   })
+}
+
+export const logoutController = async (
+  req: Request<ParamsDictionary, any, LogoutRequest>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { refresh_token } = req.body
+  const result = await authService.logout(refresh_token)
+  return res.status(HTTP_STATUS.OK).json(result)
 }
