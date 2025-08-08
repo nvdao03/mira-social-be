@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enums'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
 import { UserModel } from '~/models/user.model'
-import { SignUpRequestBody } from '~/requests/auth.request'
+import { SignInRequestBody, SignUpRequestBody } from '~/requests/auth.request'
 import hasspassword from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 
@@ -93,6 +93,18 @@ class AuthService {
     refresh_tokens.save()
     user.save()
     return { access_token, refresh_token, user }
+  }
+
+  async signIn({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken({ user_id, verify })
+
+    await RefreshTokenModel.insertOne({ user_id, token: refresh_token })
+
+    const userResponse = await UserModel.findOne({
+      _id: new mongoose.Types.ObjectId(user_id)
+    })
+
+    return { access_token, refresh_token, userResponse }
   }
 }
 

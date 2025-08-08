@@ -10,5 +10,8 @@ export const MESSAGE = {
   COUNTRY_REQUIRED: 'Country/Region is required',
   ACCOUNT_NOT_FOUND: 'Account not found',
   ACCOUNT_CREATED_SUCCESSFULLY: 'Account created successfully',
-  USER_NAME_ALREADY_EXISTS: 'Username already exists'
+  USER_NAME_ALREADY_EXISTS: 'Username already exists',
+  USER_NAME_NOT_FOUND: 'Username not found',
+  INVALID_EMAIL_OR_PASSWORD: 'Invalid email or password',
+  SIGN_IN_SUCCESSFULLY: 'Sign in successfully'
 }

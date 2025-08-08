@@ -4,3 +4,8 @@ export interface SignUpRequestBody {
   username: string
   country: string
 }
+
+export interface SignInRequestBody {
+  email: string
+  password: string
+}

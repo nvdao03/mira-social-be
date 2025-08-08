@@ -1,5 +1,25 @@
 import { UserVerifyStatus } from '~/constants/enums'
-import mongoose from 'mongoose'
+import mongoose, { ObjectId } from 'mongoose'
+
+export interface UserType {
+  _id: ObjectId
+  email: string
+  password: string
+  username: string
+  name: string
+  country: string
+  email_verify_token: string
+  forgot_password_token: string
+  verify: number
+  location: string
+  date_of_birth: Date
+  bio: string
+  website: string
+  avatar: string
+  cover_photo: string
+  createdAt: Date
+  updatedAt: Date
+}
 
 const UserShema = new mongoose.Schema(
   {
@@ -97,4 +117,4 @@ const UserShema = new mongoose.Schema(
   }
 )
 
-export const UserModel = mongoose.model('User', UserShema)
+export const UserModel = mongoose.model<UserType>('User', UserShema)
