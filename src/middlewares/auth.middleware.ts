@@ -4,6 +4,7 @@ import { HTTP_STATUS } from '~/constants/httpStatus'
 import { MESSAGE } from '~/constants/message'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
 import { UserModel } from '~/models/user.model'
+import { TokenPayload } from '~/requests/auth.request'
 import authService from '~/services/auth.service'
 import hasspassword from '~/utils/crypto'
 import { ErrorStatus } from '~/utils/Errors'
@@ -141,7 +142,7 @@ export const accessTokenValidator = validate(
                 token: accessToken,
                 secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN as string
               })
-              req.decoded_authorization = decoded_authorization
+              req.decoded_authorization = decoded_authorization as TokenPayload
             } catch (error) {
               throw new ErrorStatus({
                 status: HTTP_STATUS.UNAUTHORIZED,
@@ -185,7 +186,7 @@ export const refreshTokenValidator = validate(
                   message: MESSAGE.REFRESH_TOKEN_NOT_FOUND
                 })
               }
-              req.decoded_refresh_token = decoded_refresh_token
+              req.decoded_refresh_token = decoded_refresh_token as TokenPayload
             } catch (error) {
               if (error instanceof JsonWebTokenError) {
                 throw new ErrorStatus({

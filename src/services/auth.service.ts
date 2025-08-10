@@ -1,12 +1,12 @@
 import { config } from 'dotenv'
-import mongoose from 'mongoose'
+import mongoose, { Mongoose } from 'mongoose'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enums'
 import { MESSAGE } from '~/constants/message'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
 import { UserModel } from '~/models/user.model'
 import { SignUpRequestBody } from '~/requests/auth.request'
 import hasspassword from '~/utils/crypto'
-import { signToken } from '~/utils/jwt'
+import { signToken, verifyToken } from '~/utils/jwt'
 
 config()
 
@@ -26,7 +26,29 @@ class AuthService {
     })
   }
 
-  private async signRefreshToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+  private async signRefreshToken({
+    user_id,
+    verify,
+    exp
+  }: {
+    user_id: string
+    verify: UserVerifyStatus
+    exp?: number
+  }) {
+    if (exp) {
+      return signToken({
+        payload: {
+          user_id,
+          token_type: TokenTypes.RefreshToken,
+          verify,
+          exp
+        },
+        privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string,
+        options: {
+          algorithm: 'HS256'
+        }
+      })
+    }
     return signToken({
       payload: {
         user_id,
@@ -76,7 +98,7 @@ class AuthService {
       user_id: user_id.toString(),
       verify: UserVerifyStatus.Unverifyed
     })
-    const user = await UserModel.create({
+    const user = await UserModel.insertOne({
       ...payload,
       _id: user_id,
       password: hasspassword(payload.password),
@@ -87,30 +109,71 @@ class AuthService {
       user_id: user._id.toString(),
       verify: UserVerifyStatus.Unverifyed
     })
-    const refresh_tokens = await RefreshTokenModel.create({
-      user_id: user._id,
-      token: refresh_token
+    const decoded_refresh_token = await verifyToken({
+      token: refresh_token,
+      secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
     })
-    refresh_tokens.save()
-    user.save()
+    RefreshTokenModel.insertOne({
+      user_id: new mongoose.Types.ObjectId(user_id),
+      token: refresh_token,
+      iat: new Date(decoded_refresh_token.iat * 1000 + 7 * 60 * 60 * 1000),
+      exp: new Date(decoded_refresh_token.exp * 1000 + 7 * 60 * 60 * 1000)
+    })
     return { access_token, refresh_token, user }
   }
 
   async signIn({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken({ user_id, verify })
-
-    await RefreshTokenModel.insertOne({ user_id, token: refresh_token })
-
-    const userResponse = await UserModel.findOne({
-      _id: new mongoose.Types.ObjectId(user_id)
+    const decoded_refresh_token = await verifyToken({
+      token: refresh_token,
+      secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
     })
-
+    const [userResponse] = await Promise.all([
+      UserModel.findOne({
+        _id: new mongoose.Types.ObjectId(user_id)
+      }),
+      RefreshTokenModel.insertOne({
+        user_id: new mongoose.Types.ObjectId(user_id),
+        token: refresh_token,
+        iat: new Date(decoded_refresh_token.iat * 1000 + 7 * 60 * 60 * 1000),
+        exp: new Date(decoded_refresh_token.exp * 1000 + 7 * 60 * 60 * 1000)
+      })
+    ])
     return { access_token, refresh_token, userResponse }
   }
 
   async logout(refresh_token: string) {
     await RefreshTokenModel.deleteOne({ token: refresh_token })
     return { message: MESSAGE.LOGOUT_SUCCESSFULLY }
+  }
+
+  async refreshToken({
+    user_id,
+    verify,
+    refresh_token,
+    exp
+  }: {
+    user_id: string
+    verify: UserVerifyStatus
+    refresh_token: string
+    exp: number
+  }) {
+    const [new_access_token, new_refresh_token] = await Promise.all([
+      this.signAccessToken({ user_id, verify }),
+      this.signRefreshToken({ user_id, verify, exp }),
+      RefreshTokenModel.deleteOne({ token: refresh_token })
+    ])
+    const decoded_refresh_token = await verifyToken({
+      token: new_refresh_token,
+      secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+    })
+    await RefreshTokenModel.insertOne({
+      user_id: new mongoose.Types.ObjectId(user_id),
+      token: new_refresh_token,
+      iat: new Date(decoded_refresh_token.iat * 1000 + 7 * 60 * 60 * 1000),
+      exp: new Date(decoded_refresh_token.exp * 1000 + 7 * 60 * 60 * 1000)
+    })
+    return { access_token: new_access_token, refresh_token: new_refresh_token }
   }
 }
 

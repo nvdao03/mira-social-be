@@ -18,5 +18,6 @@ export const MESSAGE = {
   ACCESS_TOKEN_NOT_FOUND: 'Access token not found',
   REFRESH_TOKEN_REQUIRED: 'Refresh token is required',
   REFRESH_TOKEN_NOT_FOUND: 'Refresh token not found',
-  LOGOUT_SUCCESSFULLY: 'Logout successfully'
+  LOGOUT_SUCCESSFULLY: 'Logout successfully',
+  REFRESH_TOKEN_SUCCESSFULLY: 'Refresh token successfully'
 }

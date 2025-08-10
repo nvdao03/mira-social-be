@@ -1,5 +1,12 @@
 import mongoose from 'mongoose'
 
+interface RefreshTokenType {
+  token: string
+  user_id: string
+  iat: Date
+  exp: Date
+}
+
 export const RefreshTokenSchema = new mongoose.Schema(
   {
     token: {
@@ -9,6 +16,12 @@ export const RefreshTokenSchema = new mongoose.Schema(
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
+    },
+    iat: {
+      type: Date
+    },
+    exp: {
+      type: Date
     }
   },
   {
@@ -16,4 +29,4 @@ export const RefreshTokenSchema = new mongoose.Schema(
   }
 )
 
-export const RefreshTokenModel = mongoose.model('RefreshToken', RefreshTokenSchema, 'refresh_tokens')
+export const RefreshTokenModel = mongoose.model<RefreshTokenType>('RefreshToken', RefreshTokenSchema, 'refresh_tokens')

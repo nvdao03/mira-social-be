@@ -4,7 +4,13 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { pick } from 'lodash'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { MESSAGE } from '~/constants/message'
-import { LogoutRequest, SignInRequestBody, SignUpRequestBody } from '~/requests/auth.request'
+import {
+  LogoutRequest,
+  RefreshTokenRequestBody,
+  SignInRequestBody,
+  SignUpRequestBody,
+  TokenPayload
+} from '~/requests/auth.request'
 import authService from '~/services/auth.service'
 
 export const signUpController = async (
@@ -51,4 +57,18 @@ export const logoutController = async (
   const { refresh_token } = req.body
   const result = await authService.logout(refresh_token)
   return res.status(HTTP_STATUS.OK).json(result)
+}
+
+export const refreshTokenController = async (
+  req: Request<ParamsDictionary, any, RefreshTokenRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { refresh_token } = req.body
+  const { user_id, verify, exp } = req.decoded_refresh_token as TokenPayload
+  const result = await authService.refreshToken({ user_id, verify, refresh_token, exp })
+  return res.status(HTTP_STATUS.OK).json({
+    message: MESSAGE.REFRESH_TOKEN_SUCCESSFULLY,
+    data: result
+  })
 }
