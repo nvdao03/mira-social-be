@@ -6,8 +6,8 @@ export interface UserType {
   email: string
   password: string
   username: string
-  name: string
   country: string
+  name: string
   email_verify_token: string
   forgot_password_token: string
   verify: number
@@ -44,16 +44,13 @@ const UserShema = new mongoose.Schema(
       unique: [true, 'Username must be unique'],
       trim: true,
       min: [3, 'Username must be at least 3 characters'],
-      max: [50, 'Username must be at most 50 characters'],
-      index: true
+      max: [50, 'Username must be at most 50 characters']
     },
     name: {
       type: String,
-      unique: [true, 'Name must be unique'],
       trim: true,
       min: [3, 'Name must be at least 3 characters'],
-      max: [50, 'Name must be at most 50 characters'],
-      default: ''
+      max: [50, 'Name must be at most 50 characters']
     },
     country: {
       type: String,
@@ -63,13 +60,11 @@ const UserShema = new mongoose.Schema(
     },
     email_verify_token: {
       type: String,
-      trim: true,
-      default: ''
+      trim: true
     },
     forgot_password_token: {
       type: String,
-      trim: true,
-      default: ''
+      trim: true
     },
     verify: {
       type: Number,
@@ -80,8 +75,7 @@ const UserShema = new mongoose.Schema(
       type: String,
       trim: true,
       min: [2, 'Location must be at least 2 characters'],
-      max: [50, 'Location must be at most 50 characters'],
-      default: ''
+      max: [50, 'Location must be at most 50 characters']
     },
     date_of_birth: {
       type: Date,
@@ -91,25 +85,21 @@ const UserShema = new mongoose.Schema(
       type: String,
       trim: true,
       min: [2, 'Bio must be at least 2 characters'],
-      max: [50, 'Bio must be at most 50 characters'],
-      default: ''
+      max: [50, 'Bio must be at most 50 characters']
     },
     website: {
       type: String,
       trim: true,
       min: [2, 'Website must be at least 2 characters'],
-      max: [50, 'Website must be at most 50 characters'],
-      default: ''
+      max: [50, 'Website must be at most 50 characters']
     },
     avatar: {
       type: String,
-      trim: true,
-      default: ''
+      trim: true
     },
     cover_photo: {
       type: String,
-      trim: true,
-      default: ''
+      trim: true
     }
   },
   {

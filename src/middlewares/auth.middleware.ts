@@ -3,7 +3,7 @@ import { JsonWebTokenError } from 'jsonwebtoken'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { MESSAGE } from '~/constants/message'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
-import { UserModel } from '~/models/user.model'
+import { UserModel, UserType } from '~/models/user.model'
 import { TokenPayload } from '~/requests/auth.request'
 import authService from '~/services/auth.service'
 import hasspassword from '~/utils/crypto'
@@ -98,7 +98,10 @@ export const signInValidation = validate(
           options: async (value, { req }) => {
             const user = await UserModel.findOne({ email: value, password: hasspassword(req.body.password) })
             if (!user) {
-              throw new Error(MESSAGE.INVALID_EMAIL_OR_PASSWORD)
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                message: MESSAGE.INVALID_EMAIL_OR_PASSWORD
+              })
             }
             req.user = user
             return true

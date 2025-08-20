@@ -1,7 +1,6 @@
 import { UserType } from './../models/user.model'
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { pick } from 'lodash'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { MESSAGE } from '~/constants/message'
 import {
@@ -25,7 +24,13 @@ export const signUpController = async (
     data: {
       access_token,
       refresh_token,
-      user: pick(user, ['_id', 'email', 'username', 'name', 'avatar', 'created_at', 'updated_at'])
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+        name: user.name || '',
+        avatar: user.avatar || ''
+      }
     }
   })
 }
@@ -38,13 +43,19 @@ export const signInController = async (
   const user = req.user as UserType
   const user_id = user._id
   const result = await authService.signIn({ user_id: user_id.toString(), verify: user.verify })
-  const { access_token, refresh_token, userResponse } = result
+  const { access_token, refresh_token, user_res } = result
   return res.status(HTTP_STATUS.OK).json({
     message: MESSAGE.SIGN_IN_SUCCESSFULLY,
     data: {
       access_token,
       refresh_token,
-      user: pick(userResponse, ['_id', 'email', 'username', 'name', 'avatar', 'created_at', 'updated_at'])
+      user: {
+        id: user_res._id,
+        email: user_res.email,
+        username: user.username,
+        name: user.name || '',
+        avatar: user.avatar || ''
+      }
     }
   })
 }

@@ -116,10 +116,14 @@ class AuthService {
     RefreshTokenModel.insertOne({
       user_id: new mongoose.Types.ObjectId(user_id),
       token: refresh_token,
-      iat: new Date(decoded_refresh_token.iat * 1000 + 7 * 60 * 60 * 1000),
-      exp: new Date(decoded_refresh_token.exp * 1000 + 7 * 60 * 60 * 1000)
+      iat: new Date(decoded_refresh_token.iat * 1000),
+      exp: new Date(decoded_refresh_token.exp * 1000)
     })
-    return { access_token, refresh_token, user }
+    return {
+      access_token,
+      refresh_token,
+      user
+    }
   }
 
   async signIn({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
@@ -128,18 +132,22 @@ class AuthService {
       token: refresh_token,
       secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
     })
-    const [userResponse] = await Promise.all([
-      UserModel.findOne({
+    const [user_res] = await Promise.all([
+      UserModel.findById({
         _id: new mongoose.Types.ObjectId(user_id)
       }),
       RefreshTokenModel.insertOne({
         user_id: new mongoose.Types.ObjectId(user_id),
         token: refresh_token,
-        iat: new Date(decoded_refresh_token.iat * 1000 + 7 * 60 * 60 * 1000),
-        exp: new Date(decoded_refresh_token.exp * 1000 + 7 * 60 * 60 * 1000)
+        iat: new Date(decoded_refresh_token.iat * 1000),
+        exp: new Date(decoded_refresh_token.exp * 1000)
       })
     ])
-    return { access_token, refresh_token, userResponse }
+    return {
+      access_token,
+      refresh_token,
+      user_res: user_res!
+    }
   }
 
   async logout(refresh_token: string) {
@@ -170,10 +178,13 @@ class AuthService {
     await RefreshTokenModel.insertOne({
       user_id: new mongoose.Types.ObjectId(user_id),
       token: new_refresh_token,
-      iat: new Date(decoded_refresh_token.iat * 1000 + 7 * 60 * 60 * 1000),
-      exp: new Date(decoded_refresh_token.exp * 1000 + 7 * 60 * 60 * 1000)
+      iat: new Date(decoded_refresh_token.iat * 1000),
+      exp: new Date(decoded_refresh_token.exp * 1000)
     })
-    return { access_token: new_access_token, refresh_token: new_refresh_token }
+    return {
+      access_token: new_access_token,
+      refresh_token: new_refresh_token
+    }
   }
 }
 
