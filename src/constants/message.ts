@@ -1,4 +1,4 @@
-export const MESSAGE = {
+export const AUTH_MESSAGE = {
   VALIDATION_ERROR: 'Invalid data',
   EMAIL_ALREADY_EXISTS: 'Email already exists',
   EMAIL_NOT_FOUND: 'Email not found',
@@ -19,5 +19,13 @@ export const MESSAGE = {
   REFRESH_TOKEN_REQUIRED: 'Refresh token is required',
   REFRESH_TOKEN_NOT_FOUND: 'Refresh token not found',
   LOGOUT_SUCCESSFULLY: 'Logout successfully',
-  REFRESH_TOKEN_SUCCESSFULLY: 'Refresh token successfully'
+  REFRESH_TOKEN_SUCCESSFULLY: 'Refresh token successfully',
+  EMAIL_VERIFY_TOKEN_REQUIRED: 'Email verify token is required',
+  EMAIL_VERIFY_TOKEN_NOT_FOUND: 'Email verify token not found',
+  EMAIL_VERIFIED_SUCCESSFULLY: 'Email verified successfully',
+  EMAIL_VERIFIED_BEFORE: 'Email verified before'
+}
+
+export const USER_MESSAGE = {
+  USER_NOT_FOUND: 'User not found'
 }

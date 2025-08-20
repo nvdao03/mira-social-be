@@ -1,7 +1,7 @@
 import { config } from 'dotenv'
-import mongoose, { Mongoose } from 'mongoose'
+import mongoose from 'mongoose'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enums'
-import { MESSAGE } from '~/constants/message'
+import { AUTH_MESSAGE } from '~/constants/message'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
 import { UserModel } from '~/models/user.model'
 import { SignUpRequestBody } from '~/requests/auth.request'
@@ -152,7 +152,7 @@ class AuthService {
 
   async logout(refresh_token: string) {
     await RefreshTokenModel.deleteOne({ token: refresh_token })
-    return { message: MESSAGE.LOGOUT_SUCCESSFULLY }
+    return { message: AUTH_MESSAGE.LOGOUT_SUCCESSFULLY }
   }
 
   async refreshToken({
@@ -184,6 +184,28 @@ class AuthService {
     return {
       access_token: new_access_token,
       refresh_token: new_refresh_token
+    }
+  }
+
+  async verifyEmail(user_id: string) {
+    const user_res = await UserModel.findByIdAndUpdate(
+      { _id: new mongoose.Types.ObjectId(user_id) },
+      {
+        email_verify_token: '',
+        verify: UserVerifyStatus.Verifyed
+      },
+      {
+        new: true
+      }
+    )
+    const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken({
+      user_id,
+      verify: UserVerifyStatus.Verifyed
+    })
+    return {
+      access_token,
+      refresh_token,
+      user_res: user_res!
     }
   }
 }

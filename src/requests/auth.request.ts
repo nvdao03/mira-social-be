@@ -19,6 +19,10 @@ export interface RefreshTokenRequestBody {
   refresh_token: string
 }
 
+export interface VerifyEmailRequestBody {
+  email_verify_token: string
+}
+
 export interface TokenPayload {
   user_id: string
   token_type: string

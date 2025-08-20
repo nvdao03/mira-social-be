@@ -3,13 +3,15 @@ import {
   logoutController,
   refreshTokenController,
   signInController,
-  signUpController
+  signUpController,
+  verifyEmailController
 } from '~/controllers/auth.controller'
 import {
   accessTokenValidator,
   refreshTokenValidator,
   signInValidation,
-  signUpValidation
+  signUpValidation,
+  verifyEmailValidator
 } from '~/middlewares/auth.middleware'
 import { wrapHandler } from '~/utils/wrapHandler'
 
@@ -19,5 +21,6 @@ authRouter.post('/sign-up', signUpValidation, wrapHandler(signUpController))
 authRouter.post('/sign-in', signInValidation, wrapHandler(signInController))
 authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapHandler(logoutController))
 authRouter.post('/refresh-token', refreshTokenValidator, wrapHandler(refreshTokenController))
+authRouter.post('/verify-email', verifyEmailValidator, wrapHandler(verifyEmailController))
 
 export default authRouter
