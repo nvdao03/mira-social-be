@@ -7,6 +7,7 @@ import { UserModel } from '~/models/user.model'
 import { SignUpRequestBody } from '~/requests/auth.request'
 import hasspassword from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
+import { handleEmail } from '~/utils/other'
 
 config()
 
@@ -102,6 +103,7 @@ class AuthService {
       ...payload,
       _id: user_id,
       password: hasspassword(payload.password),
+      name: handleEmail(payload.email),
       verify: UserVerifyStatus.Unverifyed,
       email_verify_token: email_verify_token
     })

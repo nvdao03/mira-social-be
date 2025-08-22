@@ -57,7 +57,7 @@ export const signInController = async (
         id: user_res._id,
         email: user_res.email,
         username: user.username,
-        name: user.name || '',
+        name: user.name,
         avatar: user.avatar || ''
       }
     }
@@ -118,7 +118,7 @@ export const verifyEmailController = async (
         id: user_res._id,
         email: user_res.email,
         username: user_res.username,
-        name: user_res.name || '',
+        name: user_res.name,
         avatar: user_res.avatar || ''
       }
     }
