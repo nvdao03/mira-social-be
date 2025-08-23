@@ -4,6 +4,8 @@ import cors from 'cors'
 import mongodbConfig from '~/configs/mongodb.config'
 import errorHandler from '~/middlewares/error.middleware'
 import authRouter from '~/routes/auth.route'
+import { PostTypes } from '~/constants/enums'
+import { handleEnumToArray } from '~/utils/other'
 
 config()
 

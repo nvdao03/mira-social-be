@@ -10,3 +10,13 @@ export enum TokenTypes {
   ResetPasswordToken,
   EmailVerifyToken
 }
+
+export enum PostTypes {
+  Post,
+  RePost
+}
+
+export enum MediaTypes {
+  Image,
+  Video
+}

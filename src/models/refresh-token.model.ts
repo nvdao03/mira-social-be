@@ -5,6 +5,8 @@ interface RefreshTokenType {
   user_id: string
   iat: Date
   exp: Date
+  createdAt: Date
+  updatedAt: Date
 }
 
 export const RefreshTokenSchema = new mongoose.Schema(
