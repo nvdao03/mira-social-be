@@ -24,19 +24,16 @@ const PostSchema = new Schema(
       type: Number,
       enum: postType,
       required: [true, 'Post type is required'],
-      default: PostTypes.Post,
       index: true
     },
     parent_id: {
       type: Schema.Types.ObjectId,
-      ref: 'posts',
-      default: null
+      ref: 'posts'
     },
     content: {
-      type: String,
-      default: null
+      type: String
     },
-    media: {
+    medias: {
       type: [
         {
           url: {
@@ -49,8 +46,7 @@ const PostSchema = new Schema(
             required: [true, 'Media type is required']
           }
         }
-      ],
-      default: []
+      ]
     },
     user_id: {
       type: Schema.Types.ObjectId,

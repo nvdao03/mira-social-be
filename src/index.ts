@@ -8,6 +8,7 @@ import { mediaRouter } from '~/routes/media.route'
 import { initFolder } from '~/utils/file'
 import path from 'path'
 import { UPLOAD_IMAGE, UPLOAD_VIDEO } from '~/constants/dir'
+import { postRouter } from '~/routes/post.route'
 
 config()
 
@@ -22,6 +23,7 @@ initFolder()
 
 app.use('/auth', authRouter)
 app.use('/medias', mediaRouter)
+app.use('/posts', postRouter)
 app.use('/images', express.static(path.resolve(UPLOAD_IMAGE)))
 app.use('/videos', express.static(path.resolve(UPLOAD_VIDEO)))
 app.use(errorHandler)

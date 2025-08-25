@@ -35,3 +35,19 @@ export const MEDIA_MESSAGE = {
   UPLOAD_IMAGE_SUCCESSFULLY: 'Upload image successfully',
   UPLOAD_VIDEO_SUCCESSFULLY: 'Upload video successfully'
 }
+
+export const POST_MESSAGE = {
+  POST_NOT_FOUND: 'Post not found',
+  CREATE_POST_SUCCESSFULLY: 'Create post successfully',
+  DELETE_POST_SUCCESSFULLY: 'Delete post successfully',
+  LIKE_POST_SUCCESSFULLY: 'Like post successfully',
+  UNLIKE_POST_SUCCESSFULLY: 'Unlike post successfully',
+  SAVE_POST_SUCCESSFULLY: 'Save post successfully',
+  UNSAVE_POST_SUCCESSFULLY: 'Unsave post successfully',
+  GET_POSTS_SUCCESSFULLY: 'Get posts successfully',
+  POST_TYPE_INVALID: 'Post type is invalid',
+  PARENT_ID_REQUIRED: 'Parent id is required for RePost',
+  PARENT_ID_INVALID: 'Parent id must be null for Post',
+  CONTENT_NOT_REQUIRED: 'Content must be null for RePost',
+  PARENT_ID_NOT_REQUIRED: 'Parent id must be null'
+}
