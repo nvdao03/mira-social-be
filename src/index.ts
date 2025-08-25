@@ -4,8 +4,10 @@ import cors from 'cors'
 import mongodbConfig from '~/configs/mongodb.config'
 import errorHandler from '~/middlewares/error.middleware'
 import authRouter from '~/routes/auth.route'
-import { PostTypes } from '~/constants/enums'
-import { handleEnumToArray } from '~/utils/other'
+import { mediaRouter } from '~/routes/media.route'
+import { initFolder } from '~/utils/file'
+import path from 'path'
+import { UPLOAD_IMAGE, UPLOAD_VIDEO } from '~/constants/dir'
 
 config()
 
@@ -16,8 +18,12 @@ const app = express()
 mongodbConfig.connect()
 app.use(express.json())
 app.use(cors())
+initFolder()
 
 app.use('/auth', authRouter)
+app.use('/medias', mediaRouter)
+app.use('/images', express.static(path.resolve(UPLOAD_IMAGE)))
+app.use('/videos', express.static(path.resolve(UPLOAD_VIDEO)))
 app.use(errorHandler)
 
 app.get('/', (req, res) => {

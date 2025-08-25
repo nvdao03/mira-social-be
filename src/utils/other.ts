@@ -6,3 +6,7 @@ export const handleEmail = (email: string) => {
 export const handleEnumToArray = (enumObj: any) => {
   return Object.values(enumObj).filter((value) => typeof value === 'number') as number[]
 }
+
+export const handleGetNameFile = (fileName: string) => {
+  return fileName.split('.')[0]
+}

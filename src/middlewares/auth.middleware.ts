@@ -1,7 +1,9 @@
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
+import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatus'
-import { AUTH_MESSAGE } from '~/constants/message'
+import { AUTH_MESSAGE, USER_MESSAGE } from '~/constants/message'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
 import { UserModel } from '~/models/user.model'
 import { TokenPayload } from '~/requests/auth.request'
@@ -240,3 +242,18 @@ export const verifyEmailValidator = validate(
     ['body']
   )
 )
+
+export const verifyUserValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { verify } = req.decoded_authorization as TokenPayload
+    if (verify !== UserVerifyStatus.Verifyed) {
+      throw new ErrorStatus({
+        status: HTTP_STATUS.FORBIDDEN,
+        message: USER_MESSAGE.USER_NOT_VERIFY
+      })
+    }
+    next()
+  } catch (error) {
+    next(error)
+  }
+}

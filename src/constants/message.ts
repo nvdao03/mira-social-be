@@ -27,5 +27,11 @@ export const AUTH_MESSAGE = {
 }
 
 export const USER_MESSAGE = {
+  USER_NOT_VERIFY: 'User not verify',
   USER_NOT_FOUND: 'User not found'
+}
+
+export const MEDIA_MESSAGE = {
+  UPLOAD_IMAGE_SUCCESSFULLY: 'Upload image successfully',
+  UPLOAD_VIDEO_SUCCESSFULLY: 'Upload video successfully'
 }
