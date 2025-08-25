@@ -59,3 +59,9 @@ export const LIKE_MESSAGE = {
   UNLIKE_POST_SUCCESSFULLY: 'Unlike post successfully',
   LIKE_NOT_FOUND: 'Like not found'
 }
+
+export const BOOKMARK_MESSAGE = {
+  BOOKMARK_POST_SUCCESSFULLY: 'Bookmark post successfully',
+  UNBOOKMARK_POST_SUCCESSFULLY: 'Unbookmark post successfully',
+  BOOKMARK_NOT_FOUND: 'Bookmark not found'
+}

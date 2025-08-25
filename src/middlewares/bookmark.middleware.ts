@@ -6,7 +6,7 @@ import { PostModel } from '~/models/post.model'
 import { ErrorStatus } from '~/utils/Errors'
 import { validate } from '~/utils/validation'
 
-export const likeMiddleware = validate(
+export const bookmarkMiddleware = validate(
   checkSchema({
     post_id: {
       custom: {
