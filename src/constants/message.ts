@@ -49,5 +49,13 @@ export const POST_MESSAGE = {
   PARENT_ID_REQUIRED: 'Parent id is required for RePost',
   PARENT_ID_INVALID: 'Parent id must be null for Post',
   CONTENT_NOT_REQUIRED: 'Content must be null for RePost',
-  PARENT_ID_NOT_REQUIRED: 'Parent id must be null'
+  PARENT_ID_NOT_REQUIRED: 'Parent id must be null',
+  POST_ID_REQUIRED: 'Post id is required',
+  POST_ID_INVALID: 'Post id is invalid'
+}
+
+export const LIKE_MESSAGE = {
+  LIKE_POST_SUCCESSFULLY: 'Like post successfully',
+  UNLIKE_POST_SUCCESSFULLY: 'Unlike post successfully',
+  LIKE_NOT_FOUND: 'Like not found'
 }
