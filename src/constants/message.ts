@@ -65,3 +65,8 @@ export const BOOKMARK_MESSAGE = {
   UNBOOKMARK_POST_SUCCESSFULLY: 'Unbookmark post successfully',
   BOOKMARK_NOT_FOUND: 'Bookmark not found'
 }
+
+export const COMMENT_MESSAGE = {
+  CONTENT_REQUIRED: 'Content is required',
+  COMMENT_POST_SUCCESSFULLY: 'Comment post successfully'
+}

@@ -17,7 +17,6 @@ export const createPostValidator = validate(
         }
       },
       parent_id: {
-        isMongoId: true,
         custom: {
           options: (value, { req }) => {
             const type = req.body.type as PostTypes

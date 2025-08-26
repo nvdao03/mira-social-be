@@ -11,6 +11,7 @@ import { UPLOAD_IMAGE, UPLOAD_VIDEO } from '~/constants/dir'
 import { postRouter } from '~/routes/post.route'
 import { likeRouter } from '~/routes/like.route'
 import { bookmarkRouter } from '~/routes/bookmark.route'
+import { commentRouter } from '~/routes/comment.route'
 
 config()
 
@@ -28,6 +29,7 @@ app.use('/medias', mediaRouter)
 app.use('/posts', postRouter)
 app.use('/likes', likeRouter)
 app.use('/bookmarks', bookmarkRouter)
+app.use('/comments', commentRouter)
 app.use('/images', express.static(path.resolve(UPLOAD_IMAGE)))
 app.use('/videos', express.static(path.resolve(UPLOAD_VIDEO)))
 app.use(errorHandler)
