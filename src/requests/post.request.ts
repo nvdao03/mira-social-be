@@ -7,3 +7,8 @@ export interface CreatePostRequest {
   content?: string | null
   medias: Media[] | []
 }
+
+export interface PostQuery {
+  limit: string
+  page: string
+}

@@ -6,7 +6,7 @@ import { handleEnumToArray } from '~/utils/other'
 const postType = handleEnumToArray(PostTypes)
 const mediaType = handleEnumToArray(MediaTypes)
 
-interface PostType {
+export interface PostType {
   _id: ObjectId
   type: PostType
   parent_id: ObjectId | null
