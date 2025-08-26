@@ -25,9 +25,13 @@ export const getPostsController = async (req: Request<any, any, any, PostQuery>,
   const result = await postService.getPosts({ limit, page, user_id })
   return res.status(HTTP_STATUS.OK).json({
     message: POST_MESSAGE.GET_POSTS_SUCCESSFULLY,
-    page,
-    limit,
-    total_page: result.total_page,
-    data: result.posts
+    data: {
+      posts: result.posts,
+      pagination: {
+        page,
+        limit,
+        total_page: result.total_page
+      }
+    }
   })
 }
