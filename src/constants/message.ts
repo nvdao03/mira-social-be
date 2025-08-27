@@ -28,7 +28,8 @@ export const AUTH_MESSAGE = {
 
 export const USER_MESSAGE = {
   USER_NOT_VERIFY: 'User not verify',
-  USER_NOT_FOUND: 'User not found'
+  USER_NOT_FOUND: 'User not found',
+  GET_USER_SUGGESTIONS_SUCCESSFULLY: 'Get user suggestions successfully'
 }
 
 export const MEDIA_MESSAGE = {
@@ -70,4 +71,13 @@ export const BOOKMARK_MESSAGE = {
 export const COMMENT_MESSAGE = {
   CONTENT_REQUIRED: 'Content is required',
   COMMENT_POST_SUCCESSFULLY: 'Comment post successfully'
+}
+
+export const FOLLOWER_MESSAGE = {
+  FOLLOW_USER_SUCCESSFULLY: 'Follow user successfully',
+  UNFOLLOW_USER_SUCCESSFULLY: 'Unfollow user successfully',
+  FOLLOWER_NOT_FOUND: 'Follower not found',
+  FOLLOWED_USER_ID_REQUIRED: 'Followed user id is required',
+  FOLLOWED_USER_ID_INVALID: 'Followed user id is invalid',
+  FOLLOWER_USER_ID_NOT_FOUND: 'Follower user id not found'
 }

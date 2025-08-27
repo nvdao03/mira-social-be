@@ -1,0 +1,34 @@
+import { NextFunction, Response, Request } from 'express'
+import { ParamsDictionary } from 'express-serve-static-core'
+import { HTTP_STATUS } from '~/constants/httpStatus'
+import { FOLLOWER_MESSAGE } from '~/constants/message'
+import { FollowRequestBody } from '~/requests/follower.request'
+import followerService from '~/services/follower.service'
+
+export const followerController = async (
+  req: Request<ParamsDictionary, any, FollowRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const user_id = req.decoded_authorization?.user_id as string
+  const { followed_user_id } = req.body
+  const result = await followerService.follow({ user_id, followed_user_id })
+  return res.status(HTTP_STATUS.OK).json({
+    message: FOLLOWER_MESSAGE.FOLLOW_USER_SUCCESSFULLY,
+    data: result
+  })
+}
+
+export const unfollowerController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const user_id = req.decoded_authorization?.user_id as string
+  const { followed_user_id } = req.params
+  const result = await followerService.unfollow({ user_id, followed_user_id })
+  return res.status(HTTP_STATUS.OK).json({
+    message: FOLLOWER_MESSAGE.UNFOLLOW_USER_SUCCESSFULLY,
+    data: result
+  })
+}
