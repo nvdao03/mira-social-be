@@ -95,7 +95,8 @@ const UserShema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      trim: true
+      trim: true,
+      default: ''
     },
     cover_photo: {
       type: String,

@@ -63,7 +63,8 @@ export const LIKE_MESSAGE = {
 export const BOOKMARK_MESSAGE = {
   BOOKMARK_POST_SUCCESSFULLY: 'Bookmark post successfully',
   UNBOOKMARK_POST_SUCCESSFULLY: 'Unbookmark post successfully',
-  BOOKMARK_NOT_FOUND: 'Bookmark not found'
+  BOOKMARK_NOT_FOUND: 'Bookmark not found',
+  GET_BOOKMARKS_SUCCESSFULLY: 'Get bookmarks successfully'
 }
 
 export const COMMENT_MESSAGE = {
