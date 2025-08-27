@@ -76,6 +76,9 @@ class BookmarkService {
         $addFields: {
           isLiked: {
             $in: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
+          },
+          isBookmarked: {
+            $in: [new mongoose.Types.ObjectId(user_id), '$bookmarks.user_id']
           }
         }
       },
