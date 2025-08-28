@@ -29,7 +29,11 @@ export const AUTH_MESSAGE = {
 export const USER_MESSAGE = {
   USER_NOT_VERIFY: 'User not verify',
   USER_NOT_FOUND: 'User not found',
-  GET_USER_SUGGESTIONS_SUCCESSFULLY: 'Get user suggestions successfully'
+  GET_USER_SUGGESTIONS_SUCCESSFULLY: 'Get user suggestions successfully',
+  USERNAME_REQUIRED: 'Username is required',
+  GET_PROFILE_SUCCESSFULLY: 'Get profile successfully',
+  USERNAME_NOT_FOUND: 'Username not found',
+  GET_USER_POSTS_SUCCESSFULLY: 'Get user posts successfully'
 }
 
 export const MEDIA_MESSAGE = {

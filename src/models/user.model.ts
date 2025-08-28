@@ -27,16 +27,14 @@ const UserShema = new mongoose.Schema(
       type: String,
       required: [true, 'Email is required'],
       unique: [true, 'Email must be unique'],
-      trim: true,
-      index: true
+      trim: true
     },
     password: {
       type: String,
       required: [true, 'Password is required'],
       trim: true,
       min: [6, 'Password must be at least 6 characters'],
-      max: [180, 'Password must be at most 180 characters'],
-      index: true
+      max: [180, 'Password must be at most 180 characters']
     },
     username: {
       type: String,
@@ -75,23 +73,27 @@ const UserShema = new mongoose.Schema(
       type: String,
       trim: true,
       min: [2, 'Location must be at least 2 characters'],
-      max: [50, 'Location must be at most 50 characters']
+      max: [50, 'Location must be at most 50 characters'],
+      default: ''
     },
     date_of_birth: {
       type: Date,
-      trim: true
+      trim: true,
+      default: ''
     },
     bio: {
       type: String,
       trim: true,
       min: [2, 'Bio must be at least 2 characters'],
-      max: [50, 'Bio must be at most 50 characters']
+      max: [50, 'Bio must be at most 50 characters'],
+      default: ''
     },
     website: {
       type: String,
       trim: true,
       min: [2, 'Website must be at least 2 characters'],
-      max: [50, 'Website must be at most 50 characters']
+      max: [50, 'Website must be at most 50 characters'],
+      default: ''
     },
     avatar: {
       type: String,
@@ -100,12 +102,17 @@ const UserShema = new mongoose.Schema(
     },
     cover_photo: {
       type: String,
-      trim: true
+      trim: true,
+      default: ''
     }
   },
   {
     timestamps: true
   }
 )
+
+UserShema.index({ email: 1 }, { unique: true })
+UserShema.index({ email: 1, password: 1 })
+UserShema.index({ _id: 1, username: 1 }, { unique: true })
 
 export const UserModel = mongoose.model<UserType>('User', UserShema)
