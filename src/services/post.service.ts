@@ -42,6 +42,13 @@ class PostService {
         }
       },
       {
+        $match: {
+          parent_id: {
+            $eq: null
+          }
+        }
+      },
+      {
         $skip: limit * (page - 1)
       },
       {

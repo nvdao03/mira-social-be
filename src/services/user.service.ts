@@ -1,46 +1,10 @@
 import mongoose from 'mongoose'
 import { PostModel, PostType } from '~/models/post.model'
-import { UserModel } from '~/models/user.model'
+import { UserModel, UserType } from '~/models/user.model'
 
 class UserService {
-  async getUserSuggestions(user_id: string) {
-    const userFollowerSuggestions = await UserModel.aggregate([
-      {
-        $match: {
-          _id: {
-            $ne: new mongoose.Types.ObjectId(user_id)
-          }
-        }
-      },
-      {
-        $lookup: {
-          from: 'followers',
-          localField: '_id',
-          foreignField: 'followed_user_id',
-          as: 'followers'
-        }
-      },
-      {
-        $match: {
-          'followers.user_id': {
-            $ne: new mongoose.Types.ObjectId(user_id)
-          }
-        }
-      },
-      {
-        $project: {
-          email_verify_token: 0,
-          followers: 0,
-          password: 0,
-          country: 0
-        }
-      }
-    ])
-    return userFollowerSuggestions
-  }
-
-  async getProfile(user_id: string) {
-    const user = await UserModel.aggregate([
+  async getUserNotFollowerSuggestions({ limit, page, user_id }: { user_id: string; limit: number; page: number }) {
+    const users = await UserModel.aggregate<UserType>([
       {
         $match: {
           _id: new mongoose.Types.ObjectId(user_id)
@@ -51,44 +15,79 @@ class UserService {
           from: 'followers',
           localField: '_id',
           foreignField: 'user_id',
-          as: 'following'
-        }
-      },
-      {
-        $lookup: {
-          from: 'followers',
-          localField: '_id',
-          foreignField: 'followed_user_id',
-          as: 'follower'
+          as: 'follows'
         }
       },
       {
         $addFields: {
-          following_count: {
-            $size: '$following'
-          },
-          follower_count: {
-            $size: '$follower'
+          followedIds: {
+            $map: {
+              input: '$follows',
+              as: 'f',
+              in: '$$f.followed_user_id'
+            }
           }
         }
       },
       {
-        $project: {
-          follower: 0,
-          following: 0,
-          password: 0,
-          email_verify_token: 0
+        $lookup: {
+          from: 'users',
+          let: {
+            myId: '$_id',
+            followed: '$followedIds'
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    {
+                      $ne: ['$_id', '$$myId']
+                    },
+                    {
+                      $not: {
+                        $in: ['$_id', '$$followed']
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          as: 'unfollowed_users'
         }
+      },
+      {
+        $project: {
+          unfollowed_users: 1,
+          _id: 0
+        }
+      },
+      {
+        $unwind: {
+          path: '$unfollowed_users'
+        }
+      },
+      {
+        $skip: limit * (page - 1)
+      },
+      {
+        $limit: limit
       }
     ])
-    return user
+    const total = await UserModel.countDocuments()
+    const total_page = Math.ceil(total / limit)
+    return {
+      users,
+      total_page
+    }
   }
 
-  async getProfileUserName({ username }: { username: string }) {
+  async getProfile(id: string) {
     const user = await UserModel.aggregate([
       {
         $match: {
-          username: username
+          _id: new mongoose.Types.ObjectId(id)
         }
       },
       {
@@ -129,17 +128,7 @@ class UserService {
     return user
   }
 
-  async getUserPosts({
-    user_id,
-    limit,
-    page,
-    username
-  }: {
-    user_id: string
-    username: string
-    limit: number
-    page: number
-  }) {
+  async getPostProfile({ user_id, limit, page }: { user_id: string; limit: number; page: number }) {
     const posts = await PostModel.aggregate<PostType>([
       {
         $match: {
@@ -157,11 +146,6 @@ class UserService {
       {
         $unwind: {
           path: '$users'
-        }
-      },
-      {
-        $match: {
-          'users.username': username
         }
       },
       {
@@ -252,17 +236,7 @@ class UserService {
     }
   }
 
-  async getUserLikePosts({
-    user_id,
-    limit,
-    page,
-    username
-  }: {
-    user_id: string
-    username: string
-    limit: number
-    page: number
-  }) {
+  async getLikePostProfile({ user_id, limit, page }: { user_id: string; limit: number; page: number }) {
     const posts = await PostModel.aggregate<PostType>([
       {
         $match: {
@@ -280,11 +254,6 @@ class UserService {
       {
         $unwind: {
           path: '$users'
-        }
-      },
-      {
-        $match: {
-          'users.username': username
         }
       },
       {

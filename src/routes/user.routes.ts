@@ -1,18 +1,17 @@
 import { Router } from 'express'
 import {
   getProfileController,
-  getUserLikePostsController,
-  getUserPostController,
-  getUserProfileController,
-  getUserSuggestions
+  getUserNotFollowerSuggestionsController,
+  getPostProfileController,
+  getLikePostProfileController,
+  getRepostProfileController
 } from '~/controllers/user.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapHandler } from '~/utils/wrapHandler'
 
 export const userRouter = Router()
 
-userRouter.get('/:username/posts', accessTokenValidator, wrapHandler(getUserPostController))
-userRouter.get('/:username/likes', accessTokenValidator, wrapHandler(getUserLikePostsController))
-userRouter.get('/suggestions', accessTokenValidator, wrapHandler(getUserSuggestions))
-userRouter.get('/profile/me', accessTokenValidator, wrapHandler(getProfileController))
-userRouter.get('/profile/:username', accessTokenValidator, wrapHandler(getUserProfileController))
+userRouter.get('/suggestions', accessTokenValidator, wrapHandler(getUserNotFollowerSuggestionsController))
+userRouter.get('/:id', accessTokenValidator, wrapHandler(getProfileController))
+userRouter.get('/:user_id/posts', accessTokenValidator, wrapHandler(getPostProfileController))
+userRouter.get('/:user_id/likes', accessTokenValidator, wrapHandler(getLikePostProfileController))
