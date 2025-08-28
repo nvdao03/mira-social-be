@@ -24,9 +24,8 @@ export const getProfileController = async (req: Request, res: Response, next: Ne
 }
 
 export const getUserProfileController = async (req: Request, res: Response, next: NextFunction) => {
-  const user_id = req.decoded_authorization?.user_id as string
   const { username } = req.params
-  const user = await userService.getProfileUserName({ user_id, username })
+  const user = await userService.getProfileUserName({ username })
   return res.status(HTTP_STATUS.OK).json({
     message: USER_MESSAGE.GET_PROFILE_SUCCESSFULLY,
     data: user

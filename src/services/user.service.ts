@@ -84,11 +84,10 @@ class UserService {
     return user
   }
 
-  async getProfileUserName({ username, user_id }: { username: string; user_id: string }) {
+  async getProfileUserName({ username }: { username: string }) {
     const user = await UserModel.aggregate([
       {
         $match: {
-          _id: new mongoose.Types.ObjectId(user_id),
           username: username
         }
       },
