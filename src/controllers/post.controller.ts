@@ -35,3 +35,13 @@ export const getPostsController = async (req: Request<any, any, any, PostQuery>,
     }
   })
 }
+
+export const getPostDetailController = async (req: Request<any, any, any>, res: Response, next: NextFunction) => {
+  const { post_id } = req.params
+  const user_id = req.decoded_authorization?.user_id as string
+  const result = await postService.getPostDetail({ post_id, user_id })
+  return res.status(HTTP_STATUS.OK).json({
+    message: POST_MESSAGE.GET_POST_DETAIL_SUCCESSFULLY,
+    data: result
+  })
+}

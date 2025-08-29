@@ -143,11 +143,7 @@ class UserService {
           as: 'users'
         }
       },
-      {
-        $unwind: {
-          path: '$users'
-        }
-      },
+      { $unwind: '$users' },
       {
         $lookup: {
           from: 'likes',
@@ -155,12 +151,6 @@ class UserService {
           foreignField: 'post_id',
           as: 'likes'
         }
-      },
-      {
-        $skip: limit * (page - 1)
-      },
-      {
-        $limit: limit
       },
       {
         $lookup: {
@@ -188,26 +178,20 @@ class UserService {
       },
       {
         $addFields: {
-          like_count: {
-            $size: '$likes'
-          },
-          comment_count: {
-            $size: '$comments'
-          },
-          bookmark_count: {
-            $size: '$bookmarks'
-          },
-          repost_count: {
-            $size: '$post_children'
-          },
+          like_count: { $size: '$likes' },
+          comment_count: { $size: '$comments' },
+          bookmark_count: { $size: '$bookmarks' },
+          repost_count: { $size: '$post_children' },
           isLiked: {
             $in: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
           },
-          isBookmarkd: {
+          isBookmarked: {
             $in: [new mongoose.Types.ObjectId(user_id), '$bookmarks.user_id']
           }
         }
       },
+      { $skip: limit * (page - 1) },
+      { $limit: limit },
       {
         $project: {
           likes: 0,
@@ -216,7 +200,6 @@ class UserService {
           comments: 0,
           'users.password': 0,
           'users.email': 0,
-          'users.users.email': 0,
           'users.email_verify_token': 0,
           'users.country': 0,
           'users.createdAt': 0,
@@ -239,8 +222,16 @@ class UserService {
   async getLikePostProfile({ user_id, limit, page }: { user_id: string; limit: number; page: number }) {
     const posts = await PostModel.aggregate<PostType>([
       {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'post_id',
+          as: 'likes'
+        }
+      },
+      {
         $match: {
-          user_id: new mongoose.Types.ObjectId(user_id)
+          'likes.user_id': new mongoose.Types.ObjectId(user_id)
         }
       },
       {
@@ -251,32 +242,7 @@ class UserService {
           as: 'users'
         }
       },
-      {
-        $unwind: {
-          path: '$users'
-        }
-      },
-      {
-        $lookup: {
-          from: 'likes',
-          localField: '_id',
-          foreignField: 'post_id',
-          as: 'likes'
-        }
-      },
-      {
-        $match: {
-          $expr: {
-            $in: ['$users._id', '$likes.user_id']
-          }
-        }
-      },
-      {
-        $skip: limit * (page - 1)
-      },
-      {
-        $limit: limit
-      },
+      { $unwind: '$users' },
       {
         $lookup: {
           from: 'comments',
@@ -303,26 +269,20 @@ class UserService {
       },
       {
         $addFields: {
-          like_count: {
-            $size: '$likes'
-          },
-          comment_count: {
-            $size: '$comments'
-          },
-          bookmark_count: {
-            $size: '$bookmarks'
-          },
-          repost_count: {
-            $size: '$post_children'
-          },
+          like_count: { $size: '$likes' },
+          comment_count: { $size: '$comments' },
+          bookmark_count: { $size: '$bookmarks' },
+          repost_count: { $size: '$post_children' },
           isLiked: {
             $in: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
           },
-          isBookmarkd: {
+          isBookmarked: {
             $in: [new mongoose.Types.ObjectId(user_id), '$bookmarks.user_id']
           }
         }
       },
+      { $skip: limit * (page - 1) },
+      { $limit: limit },
       {
         $project: {
           likes: 0,
@@ -331,7 +291,6 @@ class UserService {
           comments: 0,
           'users.password': 0,
           'users.email': 0,
-          'users.users.email': 0,
           'users.email_verify_token': 0,
           'users.country': 0,
           'users.createdAt': 0,

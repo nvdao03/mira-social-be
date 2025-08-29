@@ -149,6 +149,92 @@ class PostService {
       total_page
     }
   }
+
+  async getPostDetail({ post_id, user_id }: { post_id: string; user_id: string }) {
+    const post = await PostModel.aggregate<PostType>([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(post_id)
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'users'
+        }
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'post_id',
+          as: 'comments'
+        }
+      },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'post_id',
+          as: 'likes'
+        }
+      },
+      {
+        $lookup: {
+          from: 'bookmarks',
+          localField: '_id',
+          foreignField: 'post_id',
+          as: 'bookmarks'
+        }
+      },
+      {
+        $addFields: {
+          like_count: {
+            $size: '$likes'
+          },
+          comment_count: {
+            $size: '$comments'
+          },
+          bookmark_count: {
+            $size: '$bookmarks'
+          },
+          isLiked: {
+            $ne: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
+          },
+          isBookmarked: {
+            $ne: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
+          }
+        }
+      },
+      {
+        $project: {
+          likes: 0,
+          post_children: 0,
+          bookmarks: 0,
+          comments: 0,
+          'users.password': 0,
+          'users.email': 0,
+          'users.users.email': 0,
+          'users.email_verify_token': 0,
+          'users.country': 0,
+          'users.createdAt': 0,
+          'users.updatedAt': 0,
+          'users.__v': 0,
+          user_id: 0,
+          parent_id: 0,
+          type: 0
+        }
+      },
+      {
+        $unwind: {
+          path: '$users'
+        }
+      }
+    ])
+    return post
+  }
 }
 
 const postService = new PostService()

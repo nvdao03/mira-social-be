@@ -56,7 +56,8 @@ export const POST_MESSAGE = {
   CONTENT_NOT_REQUIRED: 'Content must be null for RePost',
   PARENT_ID_NOT_REQUIRED: 'Parent id must be null',
   POST_ID_REQUIRED: 'Post id is required',
-  POST_ID_INVALID: 'Post id is invalid'
+  POST_ID_INVALID: 'Post id is invalid',
+  GET_POST_DETAIL_SUCCESSFULLY: 'Get post detail successfully'
 }
 
 export const LIKE_MESSAGE = {

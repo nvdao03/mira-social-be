@@ -41,6 +41,7 @@ class BookmarkService {
           as: 'users'
         }
       },
+      { $unwind: '$users' },
       {
         $lookup: {
           from: 'likes',
@@ -67,26 +68,8 @@ class BookmarkService {
       },
       {
         $match: {
-          'bookmarks.user_id': {
-            $eq: new mongoose.Types.ObjectId(user_id)
-          }
+          'bookmarks.user_id': new mongoose.Types.ObjectId(user_id)
         }
-      },
-      {
-        $addFields: {
-          isLiked: {
-            $in: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
-          },
-          isBookmarked: {
-            $in: [new mongoose.Types.ObjectId(user_id), '$bookmarks.user_id']
-          }
-        }
-      },
-      {
-        $skip: limit * (page - 1)
-      },
-      {
-        $limit: limit
       },
       {
         $lookup: {
@@ -98,20 +81,20 @@ class BookmarkService {
       },
       {
         $addFields: {
-          like_count: {
-            $size: '$likes'
+          like_count: { $size: '$likes' },
+          comment_count: { $size: '$comments' },
+          bookmark_count: { $size: '$bookmarks' },
+          repost_count: { $size: '$post_children' },
+          isLiked: {
+            $in: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
           },
-          comment_count: {
-            $size: '$comments'
-          },
-          bookmark_count: {
-            $size: '$bookmarks'
-          },
-          repost_count: {
-            $size: '$post_children'
+          isBookmarked: {
+            $in: [new mongoose.Types.ObjectId(user_id), '$bookmarks.user_id']
           }
         }
       },
+      { $skip: limit * (page - 1) },
+      { $limit: limit },
       {
         $project: {
           likes: 0,
@@ -120,7 +103,6 @@ class BookmarkService {
           comments: 0,
           'users.password': 0,
           'users.email': 0,
-          'users.users.email': 0,
           'users.email_verify_token': 0,
           'users.country': 0,
           'users.createdAt': 0,
@@ -129,11 +111,6 @@ class BookmarkService {
           user_id: 0,
           parent_id: 0,
           type: 0
-        }
-      },
-      {
-        $unwind: {
-          path: '$users'
         }
       }
     ])
