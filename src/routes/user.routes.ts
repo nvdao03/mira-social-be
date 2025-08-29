@@ -3,8 +3,7 @@ import {
   getProfileController,
   getUserNotFollowerSuggestionsController,
   getPostProfileController,
-  getLikePostProfileController,
-  getRepostProfileController
+  getLikePostProfileController
 } from '~/controllers/user.controller'
 import { accessTokenValidator } from '~/middlewares/auth.middleware'
 import { wrapHandler } from '~/utils/wrapHandler'

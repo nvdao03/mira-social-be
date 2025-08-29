@@ -83,11 +83,11 @@ class UserService {
     }
   }
 
-  async getProfile(id: string) {
+  async getProfile(user_id: string) {
     const user = await UserModel.aggregate([
       {
         $match: {
-          _id: new mongoose.Types.ObjectId(id)
+          _id: new mongoose.Types.ObjectId(user_id)
         }
       },
       {
@@ -95,7 +95,7 @@ class UserService {
           from: 'followers',
           localField: '_id',
           foreignField: 'user_id',
-          as: 'following'
+          as: 'follwings'
         }
       },
       {
@@ -103,16 +103,16 @@ class UserService {
           from: 'followers',
           localField: '_id',
           foreignField: 'followed_user_id',
-          as: 'follower'
+          as: 'followers'
         }
       },
       {
         $addFields: {
           following_count: {
-            $size: '$following'
+            $size: '$follwings'
           },
           follower_count: {
-            $size: '$follower'
+            $size: '$followers'
           }
         }
       },

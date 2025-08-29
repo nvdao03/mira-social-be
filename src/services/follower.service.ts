@@ -43,19 +43,19 @@ class FollowerService {
           from: 'followers',
           localField: '_id',
           foreignField: 'followed_user_id',
-          as: 'user_followers'
+          as: 'users'
         }
       },
       {
         $project: {
-          user_followers: 1,
+          users: 1,
           _id: 0
         }
       },
       {
         $lookup: {
           from: 'users',
-          localField: 'user_followers.user_id',
+          localField: 'users.user_id',
           foreignField: '_id',
           as: 'user_followers'
         }
@@ -100,34 +100,34 @@ class FollowerService {
           from: 'followers',
           localField: '_id',
           foreignField: 'user_id',
-          as: 'user_followers'
+          as: 'users'
         }
       },
       {
         $project: {
-          user_followers: 1,
+          users: 1,
           _id: 0
         }
       },
       {
         $lookup: {
           from: 'users',
-          localField: 'user_followers.user_id',
+          localField: 'users.followed_user_id',
           foreignField: '_id',
-          as: 'user_followers'
+          as: 'user_followings'
         }
       },
       {
         $project: {
-          'user_followers._id': 1,
-          'user_followers.name': 1,
-          'user_followers.username': 1,
-          'user_followers.avatar': 1
+          'user_followings._id': 1,
+          'user_followings.name': 1,
+          'user_followings.username': 1,
+          'user_followings.avatar': 1
         }
       },
       {
         $unwind: {
-          path: '$user_followers'
+          path: '$user_followings'
         }
       },
       {

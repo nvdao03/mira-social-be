@@ -79,25 +79,3 @@ export const getLikePostProfileController = async (
     }
   })
 }
-
-export const getRepostProfileController = async (
-  req: Request<ParamsDictionary, any, any, PostQuery>,
-  res: Response,
-  next: NextFunction
-) => {
-  const limit = Number(req.query.limit as string)
-  const page = Number(req.query.page as string)
-  const { user_id } = req.params
-  const result = await userService.getRepostProfile({ user_id, limit, page })
-  return res.status(HTTP_STATUS.OK).json({
-    message: USER_MESSAGE.GET_USER_POSTS_SUCCESSFULLY,
-    data: {
-      posts: result.posts,
-      pagination: {
-        page,
-        limit,
-        total_page: result.total_page
-      }
-    }
-  })
-}
