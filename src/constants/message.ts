@@ -83,5 +83,7 @@ export const FOLLOWER_MESSAGE = {
   FOLLOWER_NOT_FOUND: 'Follower not found',
   FOLLOWED_USER_ID_REQUIRED: 'Followed user id is required',
   FOLLOWED_USER_ID_INVALID: 'Followed user id is invalid',
-  FOLLOWER_USER_ID_NOT_FOUND: 'Follower user id not found'
+  FOLLOWER_USER_ID_NOT_FOUND: 'Follower user id not found',
+  GET_FOLLOWERS_SUCCESSFULLY: 'Get followers successfully',
+  GET_FOLLOWINGS_SUCCESSFULLY: 'Get followings successfully'
 }
