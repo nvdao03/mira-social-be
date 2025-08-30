@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { verify } from 'node:crypto'
 import { CommentModel } from '~/models/comment.model'
 import { PostModel, PostType } from '~/models/post.model'
 
@@ -62,13 +63,15 @@ class CommentService {
               $project: {
                 _id: 1,
                 content: 1,
-                created_at: 1,
+                createdAt: 1,
+                updatedAt: 1,
                 user: {
                   _id: 1,
                   name: 1,
                   username: 1,
                   email: 1,
-                  avatar: 1
+                  avatar: 1,
+                  verify: 1
                 }
               }
             }
@@ -90,6 +93,11 @@ class CommentService {
       comments,
       total_page
     }
+  }
+
+  async deleteComment(comment_id: string) {
+    const comment = await CommentModel.deleteOne({ _id: new mongoose.Types.ObjectId(comment_id) })
+    return comment
   }
 }
 

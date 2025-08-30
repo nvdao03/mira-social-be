@@ -77,7 +77,8 @@ export const COMMENT_MESSAGE = {
   CONTENT_REQUIRED: 'Content is required',
   COMMENT_POST_SUCCESSFULLY: 'Comment post successfully',
   COMMENT_NOT_FOUND: 'Comment not found',
-  GET_COMMENTS_SUCCESSFULLY: 'Get comments successfully'
+  GET_COMMENTS_SUCCESSFULLY: 'Get comments successfully',
+  DELETE_COMMENT_SUCCESSFULLY: 'Delete comment successfully'
 }
 
 export const FOLLOWER_MESSAGE = {

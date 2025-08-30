@@ -35,5 +35,8 @@ export const getCommentsController = async (req: Request, res: Response, next: N
     }
   })
 }
-export const deleteCommentController = (req: Request, res: Response, next: NextFunction) => {}
-export const updateCommentController = (req: Request, res: Response, next: NextFunction) => {}
+export const deleteCommentController = async (req: Request, res: Response, next: NextFunction) => {
+  const { comment_id } = req.params
+  const result = await commentService.deleteComment(comment_id)
+  return res.status(HTTP_STATUS.OK).json({ message: COMMENT_MESSAGE.DELETE_COMMENT_SUCCESSFULLY, data: result })
+}

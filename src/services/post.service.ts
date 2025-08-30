@@ -201,10 +201,10 @@ class PostService {
             $size: '$bookmarks'
           },
           isLiked: {
-            $ne: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
+            $eq: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
           },
           isBookmarked: {
-            $ne: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
+            $eq: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
           }
         }
       },
