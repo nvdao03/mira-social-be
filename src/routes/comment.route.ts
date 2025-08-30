@@ -11,7 +11,7 @@ import { wrapHandler } from '~/utils/wrapHandler'
 
 export const commentRouter = Router()
 
-commentRouter.get('/', accessTokenValidator, wrapHandler(getCommentsController))
+commentRouter.get('/post/:post_id', accessTokenValidator, wrapHandler(getCommentsController))
 commentRouter.post('/:post_id', accessTokenValidator, commentValidator, wrapHandler(commentController))
 commentRouter.put('/:post_id/:comment_id', accessTokenValidator, commentValidator, wrapHandler(updateCommentController))
 commentRouter.delete(

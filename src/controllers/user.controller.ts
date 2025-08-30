@@ -43,8 +43,9 @@ export const getPostProfileController = async (
 ) => {
   const limit = Number(req.query.limit as string)
   const page = Number(req.query.page as string)
+  const user_id_login = req.decoded_authorization?.user_id as string
   const { user_id } = req.params
-  const result = await userService.getPostProfile({ user_id, limit, page })
+  const result = await userService.getPostProfile({ user_id, limit, page, user_id_login })
   return res.status(HTTP_STATUS.OK).json({
     message: USER_MESSAGE.GET_USER_POSTS_SUCCESSFULLY,
     data: {
@@ -66,7 +67,8 @@ export const getLikePostProfileController = async (
   const limit = Number(req.query.limit as string)
   const page = Number(req.query.page as string)
   const { user_id } = req.params
-  const result = await userService.getLikePostProfile({ user_id, limit, page })
+  const user_id_login = req.decoded_authorization?.user_id as string
+  const result = await userService.getLikePostProfile({ user_id, limit, page, user_id_login })
   return res.status(HTTP_STATUS.OK).json({
     message: USER_MESSAGE.GET_USER_POSTS_SUCCESSFULLY,
     data: {

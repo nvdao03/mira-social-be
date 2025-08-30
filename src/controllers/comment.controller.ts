@@ -18,6 +18,22 @@ export const commentController = async (
     data: result
   })
 }
-export const getCommentsController = (req: Request, res: Response, next: NextFunction) => {}
+export const getCommentsController = async (req: Request, res: Response, next: NextFunction) => {
+  const { post_id } = req.params
+  const limit = Number(req.query.limit as string)
+  const page = Number(req.query.page as string)
+  const result = await commentService.getComments({ post_id, limit, page })
+  return res.status(HTTP_STATUS.OK).json({
+    message: COMMENT_MESSAGE.GET_COMMENTS_SUCCESSFULLY,
+    data: {
+      comments: result.comments,
+      pagination: {
+        page,
+        limit,
+        total_page: result.total_page
+      }
+    }
+  })
+}
 export const deleteCommentController = (req: Request, res: Response, next: NextFunction) => {}
 export const updateCommentController = (req: Request, res: Response, next: NextFunction) => {}

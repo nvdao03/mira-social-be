@@ -128,11 +128,21 @@ class UserService {
     return user
   }
 
-  async getPostProfile({ user_id, limit, page }: { user_id: string; limit: number; page: number }) {
+  async getPostProfile({
+    user_id,
+    limit,
+    page,
+    user_id_login
+  }: {
+    user_id: string
+    limit: number
+    page: number
+    user_id_login: string
+  }) {
     const posts = await PostModel.aggregate<PostType>([
       {
         $match: {
-          user_id: new mongoose.Types.ObjectId(user_id)
+          user_id: new mongoose.Types.ObjectId(user_id) // lọc theo chủ post
         }
       },
       {
@@ -154,18 +164,18 @@ class UserService {
       },
       {
         $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'post_id',
-          as: 'comments'
-        }
-      },
-      {
-        $lookup: {
           from: 'bookmarks',
           localField: '_id',
           foreignField: 'post_id',
           as: 'bookmarks'
+        }
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'post_id',
+          as: 'comments'
         }
       },
       {
@@ -183,10 +193,10 @@ class UserService {
           bookmark_count: { $size: '$bookmarks' },
           repost_count: { $size: '$post_children' },
           isLiked: {
-            $in: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
+            $in: [new mongoose.Types.ObjectId(user_id_login), '$likes.user_id'] // Lọc theo user đang login để hiển thị isLiked
           },
           isBookmarked: {
-            $in: [new mongoose.Types.ObjectId(user_id), '$bookmarks.user_id']
+            $in: [new mongoose.Types.ObjectId(user_id_login), '$bookmarks.user_id'] // Lọc theo user đang login để hiển thị isBookmared
           }
         }
       },
@@ -205,7 +215,6 @@ class UserService {
           'users.createdAt': 0,
           'users.updatedAt': 0,
           'users.__v': 0,
-          user_id: 0,
           parent_id: 0,
           type: 0
         }
@@ -219,8 +228,19 @@ class UserService {
     }
   }
 
-  async getLikePostProfile({ user_id, limit, page }: { user_id: string; limit: number; page: number }) {
+  async getLikePostProfile({
+    user_id,
+    limit,
+    page,
+    user_id_login
+  }: {
+    user_id: string
+    limit: number
+    page: number
+    user_id_login: string
+  }) {
     const posts = await PostModel.aggregate<PostType>([
+      // Join với bảng likes để lấy ra toàn bộ like của post
       {
         $lookup: {
           from: 'likes',
@@ -229,11 +249,13 @@ class UserService {
           as: 'likes'
         }
       },
+      // Chỉ giữ post mà user mình đang xem profile đã like
       {
         $match: {
           'likes.user_id': new mongoose.Types.ObjectId(user_id)
         }
       },
+      // Join user (chủ post)
       {
         $lookup: {
           from: 'users',
@@ -243,6 +265,7 @@ class UserService {
         }
       },
       { $unwind: '$users' },
+      // Join comments
       {
         $lookup: {
           from: 'comments',
@@ -251,6 +274,7 @@ class UserService {
           as: 'comments'
         }
       },
+      // Join bookmarks
       {
         $lookup: {
           from: 'bookmarks',
@@ -259,6 +283,7 @@ class UserService {
           as: 'bookmarks'
         }
       },
+      // Join reposts
       {
         $lookup: {
           from: 'posts',
@@ -267,17 +292,20 @@ class UserService {
           as: 'post_children'
         }
       },
+      // Add các field cần thiết
       {
         $addFields: {
           like_count: { $size: '$likes' },
           comment_count: { $size: '$comments' },
           bookmark_count: { $size: '$bookmarks' },
           repost_count: { $size: '$post_children' },
+          // Kiểm tra currentUser đã like chưa
           isLiked: {
-            $in: [new mongoose.Types.ObjectId(user_id), '$likes.user_id']
+            $in: [new mongoose.Types.ObjectId(user_id_login), '$likes.user_id']
           },
+          // Kiểm tra currentUser đã bookmark chưa
           isBookmarked: {
-            $in: [new mongoose.Types.ObjectId(user_id), '$bookmarks.user_id']
+            $in: [new mongoose.Types.ObjectId(user_id_login), '$bookmarks.user_id']
           }
         }
       },
@@ -296,7 +324,6 @@ class UserService {
           'users.createdAt': 0,
           'users.updatedAt': 0,
           'users.__v': 0,
-          user_id: 0,
           parent_id: 0,
           type: 0
         }
