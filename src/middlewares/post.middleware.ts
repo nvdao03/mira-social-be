@@ -4,6 +4,9 @@ import { PostTypes } from '~/constants/enums'
 import { POST_MESSAGE } from '~/constants/message'
 import { handleEnumToArray } from '~/utils/other'
 import { validate } from '~/utils/validation'
+import { ErrorStatus } from '~/utils/Errors'
+import { HTTP_STATUS } from '~/constants/httpStatus'
+import { PostModel } from '~/models/post.model'
 
 const postType = handleEnumToArray(PostTypes)
 
@@ -60,4 +63,35 @@ export const createPostValidator = validate(
     },
     ['body']
   )
+)
+
+export const postIdValidator = validate(
+  checkSchema({
+    post_id: {
+      custom: {
+        options: async (value, { req }) => {
+          if (!value) {
+            throw new ErrorStatus({
+              message: POST_MESSAGE.POST_ID_REQUIRED,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          if (!mongoose.Types.ObjectId.isValid(value)) {
+            throw new ErrorStatus({
+              message: POST_MESSAGE.POST_ID_INVALID,
+              status: HTTP_STATUS.BAD_REQUEST
+            })
+          }
+          const post = await PostModel.findById({ _id: new mongoose.Types.ObjectId(value) })
+          if (!post) {
+            throw new ErrorStatus({
+              message: POST_MESSAGE.POST_NOT_FOUND,
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+          return true
+        }
+      }
+    }
+  })
 )

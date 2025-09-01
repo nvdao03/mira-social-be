@@ -235,6 +235,14 @@ class PostService {
     ])
     return post
   }
+
+  async deletePost({ post_id, user_id }: { post_id: string; user_id: string }) {
+    const post = await PostModel.findOneAndDelete({
+      _id: new mongoose.Types.ObjectId(post_id),
+      user_id: new mongoose.Types.ObjectId(user_id)
+    })
+    return post
+  }
 }
 
 const postService = new PostService()

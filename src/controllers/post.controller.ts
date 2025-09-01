@@ -45,3 +45,13 @@ export const getPostDetailController = async (req: Request<any, any, any>, res: 
     data: result
   })
 }
+
+export const deletePostController = async (req: Request<any, any, any>, res: Response, next: NextFunction) => {
+  const { post_id } = req.params
+  const user_id = req.decoded_authorization?.user_id as string
+  const result = await postService.deletePost({ post_id, user_id })
+  return res.status(HTTP_STATUS.OK).json({
+    message: POST_MESSAGE.DELETE_POST_SUCCESSFULLY,
+    data: result
+  })
+}
