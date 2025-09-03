@@ -424,3 +424,83 @@ export const resetPasswordValidator = validate(
     ['body']
   )
 )
+
+export const changePasswordValidator = validate(
+  checkSchema({
+    current_password: {
+      isString: true,
+      notEmpty: {
+        errorMessage: AUTH_MESSAGE.PASSWORD_REQUIRED
+      },
+      isLength: {
+        options: {
+          min: 6,
+          max: 180
+        },
+        errorMessage: AUTH_MESSAGE.PASSWORD_LENGTH
+      },
+      trim: true,
+      // Kiểm tra password truyền nên có giống với passowrd cũ hay ko
+      custom: {
+        options: async (value, { req }) => {
+          const user_id = (req as Request).decoded_authorization?.user_id as string
+          const user = await UserModel.findById(user_id)
+          if (!user) {
+            throw new ErrorStatus({
+              status: HTTP_STATUS.UNAUTHORIZED,
+              message: USER_MESSAGE.USER_NOT_FOUND
+            })
+          }
+          const { password } = user
+          const isMath = password === hasspassword(value)
+          if (!isMath) {
+            throw new ErrorStatus({
+              status: HTTP_STATUS.UNAUTHORIZED,
+              message: AUTH_MESSAGE.CURRENT_PASSWORD_NOT_MATCH
+            })
+          }
+          return true
+        }
+      }
+    },
+    new_password: {
+      isString: true,
+      notEmpty: {
+        errorMessage: AUTH_MESSAGE.NEW_PASSWORD_REQUIRED
+      },
+      isLength: {
+        options: {
+          min: 6,
+          max: 180
+        },
+        errorMessage: AUTH_MESSAGE.NEW_PASSWORD_LENGTH
+      },
+      trim: true
+    },
+    confirm_password: {
+      notEmpty: {
+        errorMessage: AUTH_MESSAGE.CONFIRM_PASSWORD_REQUIRED
+      },
+      isString: true,
+      isLength: {
+        options: {
+          min: 6,
+          max: 180
+        },
+        errorMessage: AUTH_MESSAGE.CONFIRM_PASSWORD_LENGTH
+      },
+      trim: true,
+      custom: {
+        options: (value, { req }) => {
+          if (value !== req.body.new_password) {
+            throw new ErrorStatus({
+              status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+              message: AUTH_MESSAGE.CONFIRM_PASSWORD_NOT_MATCH
+            })
+          }
+          return true
+        }
+      }
+    }
+  })
+)

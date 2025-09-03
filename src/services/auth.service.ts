@@ -254,7 +254,26 @@ class AuthService {
         returnDocument: 'after'
       }
     )
-    return result
+    return {
+      message: AUTH_MESSAGE.RESET_PASSWORD_SUCCESSFULLY
+    }
+  }
+
+  async changePassword({ user_id, new_password }: { user_id: string; new_password: string }) {
+    const result = await UserModel.findByIdAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(user_id)
+      },
+      {
+        password: hasspassword(new_password)
+      },
+      {
+        returnDocument: 'after'
+      }
+    )
+    return {
+      message: AUTH_MESSAGE.CHANGE_PASSWORD_SUCCESSFULLY
+    }
   }
 }
 

@@ -33,7 +33,15 @@ export const AUTH_MESSAGE = {
   CONFIRM_PASSWORD_REQUIRED: 'Confirm password is required',
   CONFIRM_PASSWORD_LENGTH: 'Confirm password must be at least 6 to 180 characters',
   PASSWORD_NOT_MATCH: 'Password not match',
-  RESET_PASSWORD_SUCCESSFULLY: 'Reset password successfully'
+  RESET_PASSWORD_SUCCESSFULLY: 'Reset password successfully',
+  OLD_PASSWORD_REQUIRED: 'Old password is required',
+  OLD_PASSWORD_LENGTH: 'Old password must be at least 6 to 180 characters',
+  CONFIRM_PASSWORD_NOT_MATCH: 'Confirm password not match',
+  OLD_PASSWORD_NOT_MATCH: 'Old password not match',
+  CHANGE_PASSWORD_SUCCESSFULLY: 'Change password successfully',
+  NEW_PASSWORD_LENGTH: 'New password must be at least 6 to 180 characters',
+  NEW_PASSWORD_REQUIRED: 'New password is required',
+  CURRENT_PASSWORD_NOT_MATCH: 'Current password not match'
 }
 
 export const USER_MESSAGE = {

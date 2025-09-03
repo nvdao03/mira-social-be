@@ -6,6 +6,7 @@ import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { AUTH_MESSAGE, USER_MESSAGE } from '~/constants/message'
 import {
+  ChangePasswordRequestBody,
   ForgotPasswordRequestBody,
   LogoutRequest,
   RefreshTokenRequestBody,
@@ -154,8 +155,16 @@ export const resetPasswordController = async (
   const user_id = req.decoded_forgot_password_token?.user_id as string
   const { password } = req.body
   const result = await authService.resetPassword({ user_id, password })
-  return res.status(HTTP_STATUS.OK).json({
-    message: AUTH_MESSAGE.RESET_PASSWORD_SUCCESSFULLY,
-    data: result
-  })
+  return res.status(HTTP_STATUS.OK).json(result)
+}
+
+export const changePasswordController = async (
+  req: Request<ParamsDictionary, any, ChangePasswordRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const user_id = req.decoded_authorization?.user_id as string
+  const { new_password } = req.body
+  const result = await authService.changePassword({ user_id, new_password })
+  return res.status(HTTP_STATUS.OK).json(result)
 }
