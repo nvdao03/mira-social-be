@@ -257,3 +257,170 @@ export const verifyUserValidator = async (req: Request, res: Response, next: Nex
     next(error)
   }
 }
+
+export const forgotPasswordValidator = validate(
+  checkSchema(
+    {
+      email: {
+        isEmail: {
+          errorMessage: AUTH_MESSAGE.EMAIL_INVALID
+        },
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: AUTH_MESSAGE.EMAIL_REQUIRED
+              })
+            }
+            const user = await UserModel.findOne({ email: value })
+            if (!user) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: AUTH_MESSAGE.EMAIL_NOT_FOUND
+              })
+            }
+            req.user = user
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const verifyForgotPasswordToken = validate(
+  checkSchema(
+    {
+      forgot_password_token: {
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_REQUIRED
+              })
+            }
+            try {
+              const decoded_forgot_password_token = await verifyToken({
+                token: value,
+                secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+              })
+              const { user_id } = decoded_forgot_password_token as TokenPayload
+              const user = await UserModel.findById(user_id)
+              if (!user) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: USER_MESSAGE.USER_NOT_FOUND
+                })
+              }
+              if (user.forgot_password_token !== value) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_INVALID
+                })
+              }
+            } catch (error) {
+              throw new ErrorStatus({
+                message: AUTH_MESSAGE.FORGOT_PASSWORD_NOT_FOUND,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
+export const resetPasswordValidator = validate(
+  checkSchema(
+    {
+      password: {
+        isString: true,
+        notEmpty: {
+          errorMessage: AUTH_MESSAGE.PASSWORD_REQUIRED
+        },
+        isLength: {
+          options: {
+            min: 6,
+            max: 180
+          },
+          errorMessage: AUTH_MESSAGE.PASSWORD_LENGTH
+        },
+        trim: true
+      },
+      confirm_password: {
+        notEmpty: {
+          errorMessage: AUTH_MESSAGE.CONFIRM_PASSWORD_REQUIRED
+        },
+        isString: true,
+        isLength: {
+          options: {
+            min: 6,
+            max: 180
+          },
+          errorMessage: AUTH_MESSAGE.CONFIRM_PASSWORD_LENGTH
+        },
+        trim: true,
+        custom: {
+          options: (value, { req }) => {
+            if (value !== req.body.password) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNPROCESSABLE_ENTITY,
+                message: AUTH_MESSAGE.PASSWORD_NOT_MATCH
+              })
+            }
+            return true
+          }
+        }
+      },
+      forgot_password_token: {
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorStatus({
+                status: HTTP_STATUS.UNAUTHORIZED,
+                message: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_REQUIRED
+              })
+            }
+            try {
+              const decoded_forgot_password_token = await verifyToken({
+                token: value,
+                secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+              })
+              const { user_id } = decoded_forgot_password_token as TokenPayload
+              const user = await UserModel.findById(user_id)
+              if (!user) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: USER_MESSAGE.USER_NOT_FOUND
+                })
+              }
+              if (user.forgot_password_token !== value) {
+                throw new ErrorStatus({
+                  status: HTTP_STATUS.UNAUTHORIZED,
+                  message: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_INVALID
+                })
+              }
+              req.decoded_forgot_password_token = decoded_forgot_password_token
+            } catch (error) {
+              throw new ErrorStatus({
+                message: AUTH_MESSAGE.FORGOT_PASSWORD_NOT_FOUND,
+                status: HTTP_STATUS.UNAUTHORIZED
+              })
+            }
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)

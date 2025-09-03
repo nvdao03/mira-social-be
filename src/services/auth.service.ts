@@ -1,9 +1,10 @@
+import { verify } from 'node:crypto'
 import { config } from 'dotenv'
 import mongoose from 'mongoose'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enums'
 import { AUTH_MESSAGE } from '~/constants/message'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
-import { UserModel } from '~/models/user.model'
+import { UserModel, UserType } from '~/models/user.model'
 import { SignUpRequestBody } from '~/requests/auth.request'
 import hasspassword from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
@@ -75,6 +76,21 @@ class AuthService {
       options: {
         algorithm: 'HS256',
         expiresIn: process.env.EMAIL_VERIFY_TOKEN_EXPIRES_IN as any
+      }
+    })
+  }
+
+  private async signForgotPasswordToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+    return signToken({
+      payload: {
+        user_id,
+        token_type: TokenTypes.ForgotPasswordToken,
+        verify
+      },
+      privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as any,
+      options: {
+        algorithm: 'HS256',
+        expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRES_IN as any
       }
     })
   }
@@ -209,6 +225,36 @@ class AuthService {
       refresh_token,
       user_res: user_res!
     }
+  }
+
+  async forgotPassword(user: UserType) {
+    const forgot_password_token = await this.signForgotPasswordToken({
+      user_id: user._id.toString(),
+      verify: user.verify
+    })
+    await UserModel.findByIdAndUpdate(user._id, {
+      forgot_password_token: forgot_password_token
+    })
+    console.log('forgot_password_token', forgot_password_token)
+    return {
+      message: AUTH_MESSAGE.FORGOT_PASSWORD_SUCCESSFULLY
+    }
+  }
+
+  async resetPassword({ user_id, password }: { user_id: string; password: string }) {
+    const result = await UserModel.findByIdAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(user_id)
+      },
+      {
+        password: hasspassword(password),
+        forgot_password_token: ''
+      },
+      {
+        returnDocument: 'after'
+      }
+    )
+    return result
   }
 }
 

@@ -1,17 +1,23 @@
 import { Router, Request, Response, NextFunction } from 'express'
 import {
+  forgotPasswordController,
   logoutController,
   refreshTokenController,
+  resetPasswordController,
   signInController,
   signUpController,
-  verifyEmailController
+  verifyEmailController,
+  verifyForgotPasswordController
 } from '~/controllers/auth.controller'
 import {
   accessTokenValidator,
+  forgotPasswordValidator,
   refreshTokenValidator,
+  resetPasswordValidator,
   signInValidation,
   signUpValidation,
-  verifyEmailValidator
+  verifyEmailValidator,
+  verifyForgotPasswordToken
 } from '~/middlewares/auth.middleware'
 import { wrapHandler } from '~/utils/wrapHandler'
 
@@ -22,5 +28,8 @@ authRouter.post('/sign-in', signInValidation, wrapHandler(signInController))
 authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapHandler(logoutController))
 authRouter.post('/refresh-token', refreshTokenValidator, wrapHandler(refreshTokenController))
 authRouter.post('/verify-email', verifyEmailValidator, wrapHandler(verifyEmailController))
+authRouter.post('/forgot-password', forgotPasswordValidator, wrapHandler(forgotPasswordController))
+authRouter.post('/verify-forgot-password', verifyForgotPasswordToken, wrapHandler(verifyForgotPasswordController))
+authRouter.post('/reset-password', resetPasswordValidator, wrapHandler(resetPasswordController))
 
 export default authRouter

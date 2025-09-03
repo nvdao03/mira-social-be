@@ -6,6 +6,7 @@ import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { AUTH_MESSAGE, USER_MESSAGE } from '~/constants/message'
 import {
+  ForgotPasswordRequestBody,
   LogoutRequest,
   RefreshTokenRequestBody,
   SignInRequestBody,
@@ -122,5 +123,39 @@ export const verifyEmailController = async (
         avatar: user_res.avatar || ''
       }
     }
+  })
+}
+
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, VerifyEmailRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = req.user as UserType
+  const result = await authService.forgotPassword(user)
+  return res.status(HTTP_STATUS.OK).json({
+    message: result.message
+  })
+}
+
+export const verifyForgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordRequestBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  return res.status(HTTP_STATUS.OK).json({ message: AUTH_MESSAGE.VERIFY_FORGOT_PASSWORD_SUCCESSFULLY })
+}
+
+export const resetPasswordController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response,
+  next: NextFunction
+) => {
+  const user_id = req.decoded_forgot_password_token?.user_id as string
+  const { password } = req.body
+  const result = await authService.resetPassword({ user_id, password })
+  return res.status(HTTP_STATUS.OK).json({
+    message: AUTH_MESSAGE.RESET_PASSWORD_SUCCESSFULLY,
+    data: result
   })
 }

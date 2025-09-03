@@ -23,7 +23,17 @@ export const AUTH_MESSAGE = {
   EMAIL_VERIFY_TOKEN_REQUIRED: 'Email verify token is required',
   EMAIL_VERIFY_TOKEN_NOT_FOUND: 'Email verify token not found',
   EMAIL_VERIFIED_SUCCESSFULLY: 'Email verified successfully',
-  EMAIL_VERIFIED_BEFORE: 'Email verified before'
+  EMAIL_VERIFIED_BEFORE: 'Email verified before',
+  FORGOT_PASSWORD_SUCCESSFULLY: 'Forgot password successfully',
+  EMAIL_INVALID: 'Email is invalid',
+  FORGOT_PASSWORD_TOKEN_REQUIRED: 'Forgot password token is required',
+  FORGOT_PASSWORD_TOKEN_INVALID: 'Forgot password token is invalid',
+  FORGOT_PASSWORD_NOT_FOUND: 'Forgot password not found',
+  VERIFY_FORGOT_PASSWORD_SUCCESSFULLY: 'Verify forgot password successfully',
+  CONFIRM_PASSWORD_REQUIRED: 'Confirm password is required',
+  CONFIRM_PASSWORD_LENGTH: 'Confirm password must be at least 6 to 180 characters',
+  PASSWORD_NOT_MATCH: 'Password not match',
+  RESET_PASSWORD_SUCCESSFULLY: 'Reset password successfully'
 }
 
 export const USER_MESSAGE = {

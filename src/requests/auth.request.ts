@@ -1,3 +1,4 @@
+import { verifyForgotPasswordToken } from './../middlewares/auth.middleware'
 export interface SignUpRequestBody {
   email: string
   password: string
@@ -29,4 +30,12 @@ export interface TokenPayload {
   verify: number
   iat: number
   exp: number
+}
+
+export interface ForgotPasswordRequestBody {
+  email: string
+}
+
+export interface verifyForgotPasswordTokenRequestBody {
+  forgot_password_token: string
 }
