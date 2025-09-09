@@ -75,7 +75,9 @@ export const POST_MESSAGE = {
   PARENT_ID_NOT_REQUIRED: 'Parent id must be null',
   POST_ID_REQUIRED: 'Post id is required',
   POST_ID_INVALID: 'Post id is invalid',
-  GET_POST_DETAIL_SUCCESSFULLY: 'Get post detail successfully'
+  GET_POST_DETAIL_SUCCESSFULLY: 'Get post detail successfully',
+  UPDATE_POST_SUCCESSFULLY: 'Update post successfully',
+  UPDATE_POST_FAILED: 'Update post failed'
 }
 
 export const LIKE_MESSAGE = {

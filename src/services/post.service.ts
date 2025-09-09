@@ -1,7 +1,8 @@
 import mongoose from 'mongoose'
 import { PostTypes } from '~/constants/enums'
+import { POST_MESSAGE } from '~/constants/message'
 import { PostModel, PostType } from '~/models/post.model'
-import { CreatePostRequest } from '~/requests/post.request'
+import { CreatePostRequest, UpdatePostRequest } from '~/requests/post.request'
 
 class PostService {
   async createPost({ user_id, body }: { user_id: string; body: CreatePostRequest }) {
@@ -241,6 +242,32 @@ class PostService {
       _id: new mongoose.Types.ObjectId(post_id),
       user_id: new mongoose.Types.ObjectId(user_id)
     })
+    return post
+  }
+
+  async updatePost({ post_id, user_id, body }: { post_id: string; user_id: string; body: UpdatePostRequest }) {
+    const post = await PostModel.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(post_id),
+        user_id: new mongoose.Types.ObjectId(user_id)
+      },
+      {
+        $set: {
+          ...body
+        },
+        $currentDate: {
+          updatedAt: true
+        }
+      },
+      {
+        returnDocument: 'after'
+      }
+    )
+    if (!post) {
+      return {
+        message: POST_MESSAGE.UPDATE_POST_FAILED
+      }
+    }
     return post
   }
 }

@@ -3,7 +3,8 @@ import {
   createPostController,
   deletePostController,
   getPostDetailController,
-  getPostsController
+  getPostsController,
+  updatePostController
 } from '~/controllers/post.controller'
 import { accessTokenValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
 import { createPostValidator, postIdValidator } from '~/middlewares/post.middleware'
@@ -20,4 +21,11 @@ postRouter.delete(
   verifyUserValidator,
   postIdValidator,
   wrapHandler(deletePostController)
+)
+postRouter.put(
+  '/:post_id',
+  accessTokenValidator,
+  verifyUserValidator,
+  postIdValidator,
+  wrapHandler(updatePostController)
 )

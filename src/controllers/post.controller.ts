@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { POST_MESSAGE } from '~/constants/message'
 import { TokenPayload } from '~/requests/auth.request'
-import { CreatePostRequest, PostQuery } from '~/requests/post.request'
+import { CreatePostRequest, PostQuery, UpdatePostRequest } from '~/requests/post.request'
 import postService from '~/services/post.service'
 
 export const createPostController = async (
@@ -52,6 +52,20 @@ export const deletePostController = async (req: Request<any, any, any>, res: Res
   const result = await postService.deletePost({ post_id, user_id })
   return res.status(HTTP_STATUS.OK).json({
     message: POST_MESSAGE.DELETE_POST_SUCCESSFULLY,
+    data: result
+  })
+}
+
+export const updatePostController = async (
+  req: Request<any, any, UpdatePostRequest>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { post_id } = req.params
+  const user_id = req.decoded_authorization?.user_id as string
+  const result = await postService.updatePost({ post_id, user_id, body: req.body })
+  return res.status(HTTP_STATUS.OK).json({
+    message: POST_MESSAGE.UPDATE_POST_SUCCESSFULLY,
     data: result
   })
 }

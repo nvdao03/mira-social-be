@@ -8,6 +8,13 @@ export interface CreatePostRequest {
   medias: Media[] | []
 }
 
+export interface UpdatePostRequest {
+  type: PostTypes
+  parent_id?: string | null
+  content?: string | null
+  medias: Media[] | []
+}
+
 export interface PostQuery {
   limit: string
   page: string
