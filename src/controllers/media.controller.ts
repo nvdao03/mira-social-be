@@ -18,3 +18,19 @@ export const uploadVideoController = async (req: Request, res: Response, next: N
     data: result
   })
 }
+
+export const uploadAvatarController = async (req: Request, res: Response, next: NextFunction) => {
+  const result = await mediaService.uploadAvatar(req)
+  return res.status(HTTP_STATUS.OK).json({
+    message: MEDIA_MESSAGE.UPLOAD_AVATAR_SUCCESSFULLY,
+    data: result
+  })
+}
+
+export const uploadCoverPhotoController = async (req: Request, res: Response, next: NextFunction) => {
+  const result = await mediaService.uploadCoverPhoto(req)
+  return res.status(HTTP_STATUS.OK).json({
+    message: MEDIA_MESSAGE.UPLOAD_COVER_PHOTO_SUCCESSFULLY,
+    data: result
+  })
+}

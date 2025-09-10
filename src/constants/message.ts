@@ -51,12 +51,15 @@ export const USER_MESSAGE = {
   USERNAME_REQUIRED: 'Username is required',
   GET_PROFILE_SUCCESSFULLY: 'Get profile successfully',
   USERNAME_NOT_FOUND: 'Username not found',
-  GET_USER_POSTS_SUCCESSFULLY: 'Get user posts successfully'
+  GET_USER_POSTS_SUCCESSFULLY: 'Get user posts successfully',
+  UPDATE_PROFILE_SUCCESSFULLY: 'Update profile successfully'
 }
 
 export const MEDIA_MESSAGE = {
   UPLOAD_IMAGE_SUCCESSFULLY: 'Upload image successfully',
-  UPLOAD_VIDEO_SUCCESSFULLY: 'Upload video successfully'
+  UPLOAD_VIDEO_SUCCESSFULLY: 'Upload video successfully',
+  UPLOAD_AVATAR_SUCCESSFULLY: 'Upload avatar successfully',
+  UPLOAD_COVER_PHOTO_SUCCESSFULLY: 'Upload cover photo successfully'
 }
 
 export const POST_MESSAGE = {

@@ -88,3 +88,65 @@ export const handleUploadVideo = (req: Request) => {
     })
   })
 }
+
+/*
+  handler file avatar
+*/
+export const handleUploadAvatar = (req: Request) => {
+  const form = formidable({
+    uploadDir: UPLOAD_IMAGE_TEMP_DIR,
+    maxFiles: 1,
+    maxFileSize: 1 * 1024 * 1024, // 1MB
+    keepExtensions: true,
+    filter: ({ name, originalFilename, mimetype }) => {
+      const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
+      if (!valid) {
+        form.emit('error' as any, new Error('Invalid file image') as any)
+      }
+      return valid
+    }
+  })
+  return new Promise<File[]>((resolve, reject) => {
+    form.parse(req, (err, field, files) => {
+      if (err) {
+        reject(err)
+      }
+      // eslint-disable-next-line no-extra-boolean-cast
+      if (!Boolean(files.image)) {
+        return reject(new Error('No file'))
+      }
+      return resolve(files.image as File[])
+    })
+  })
+}
+
+/*
+  handler file cover photo
+*/
+export const handleCoverPhoto = (req: Request) => {
+  const form = formidable({
+    uploadDir: UPLOAD_IMAGE_TEMP_DIR,
+    maxFiles: 1,
+    maxFileSize: 1 * 1024 * 1024, // 1MB
+    keepExtensions: true,
+    filter: ({ name, originalFilename, mimetype }) => {
+      const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
+      if (!valid) {
+        form.emit('error' as any, new Error('Invalid file image') as any)
+      }
+      return valid
+    }
+  })
+  return new Promise<File[]>((resolve, reject) => {
+    form.parse(req, (err, field, files) => {
+      if (err) {
+        reject(err)
+      }
+      // eslint-disable-next-line no-extra-boolean-cast
+      if (!Boolean(files.image)) {
+        return reject(new Error('No file'))
+      }
+      return resolve(files.image as File[])
+    })
+  })
+}

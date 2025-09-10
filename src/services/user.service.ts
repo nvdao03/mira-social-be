@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { PostModel, PostType } from '~/models/post.model'
 import { UserModel, UserType } from '~/models/user.model'
+import { UpdateProfileRequestBody } from '~/requests/user.request'
 
 class UserService {
   async getUserNotFollowerSuggestions({ limit, page, user_id }: { user_id: string; limit: number; page: number }) {
@@ -335,6 +336,26 @@ class UserService {
       posts,
       total_page
     }
+  }
+
+  async updateProfile({ user_id, body }: { user_id: string; body: UpdateProfileRequestBody }) {
+    const user = await UserModel.findOneAndUpdate(
+      {
+        _id: new mongoose.Types.ObjectId(user_id)
+      },
+      {
+        $set: {
+          ...body
+        },
+        $currentDate: {
+          updatedAt: true
+        }
+      },
+      {
+        returnDocument: 'after'
+      }
+    )
+    return user
   }
 }
 

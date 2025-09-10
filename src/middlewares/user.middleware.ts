@@ -32,3 +32,36 @@ export const getUserProfileValidator = validate(
     ['params']
   )
 )
+
+export const updateProfileValidator = validate(
+  checkSchema(
+    {
+      name: {
+        isString: true,
+        trim: true
+      },
+      avatar: {
+        isString: true,
+        trim: true
+      },
+      bio: {
+        isString: true,
+        trim: true
+      },
+      location: {
+        isString: true,
+        trim: true
+      },
+      website: {
+        isString: true,
+        trim: true
+      },
+      date_or_birth: {},
+      cover_photo: {
+        isString: true,
+        trim: true
+      }
+    },
+    ['body']
+  )
+)
