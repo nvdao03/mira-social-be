@@ -52,7 +52,10 @@ export const USER_MESSAGE = {
   GET_PROFILE_SUCCESSFULLY: 'Get profile successfully',
   USERNAME_NOT_FOUND: 'Username not found',
   GET_USER_POSTS_SUCCESSFULLY: 'Get user posts successfully',
-  UPDATE_PROFILE_SUCCESSFULLY: 'Update profile successfully'
+  UPDATE_PROFILE_SUCCESSFULLY: 'Update profile successfully',
+  NAME_MUST_BE_STRING: 'Name must be a string',
+  USERNAME_MUST_BE_STRING: 'Username must be a string',
+  SEARCH_INVALID: 'Search is invalid'
 }
 
 export const MEDIA_MESSAGE = {
@@ -113,4 +116,9 @@ export const FOLLOWER_MESSAGE = {
   FOLLOWER_USER_ID_NOT_FOUND: 'Follower user id not found',
   GET_FOLLOWERS_SUCCESSFULLY: 'Get followers successfully',
   GET_FOLLOWINGS_SUCCESSFULLY: 'Get followings successfully'
+}
+
+export const SEARCH_MESSAGE = {
+  SEARCH_INVALID: 'Search is invalid',
+  GET_USERS_SUCCESSFULLY: 'Get users successfully'
 }

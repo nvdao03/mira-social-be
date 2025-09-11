@@ -339,13 +339,14 @@ class UserService {
   }
 
   async updateProfile({ user_id, body }: { user_id: string; body: UpdateProfileRequestBody }) {
+    const updateData = body.date_of_birth ? { ...body, date_of_birth: new Date(body.date_of_birth) } : body
     const user = await UserModel.findOneAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(user_id)
       },
       {
         $set: {
-          ...body
+          ...(updateData as UpdateProfileRequestBody & { date_of_birth: Date })
         },
         $currentDate: {
           updatedAt: true

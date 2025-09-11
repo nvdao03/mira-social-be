@@ -3,7 +3,7 @@ export interface UpdateProfileRequestBody {
   bio: string
   location: string
   website: string
-  date_or_birth: Date
+  date_of_birth: string
   avatar: string
   cover_photo: string
 }

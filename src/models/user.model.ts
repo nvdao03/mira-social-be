@@ -12,7 +12,7 @@ export interface UserType {
   forgot_password_token: string
   verify: number
   location: string
-  date_of_birth: Date
+  date_of_birth: Date | null
   bio: string
   website: string
   avatar: string
@@ -78,8 +78,7 @@ const UserShema = new mongoose.Schema(
     },
     date_of_birth: {
       type: Date,
-      trim: true,
-      default: ''
+      default: null
     },
     bio: {
       type: String,
@@ -114,5 +113,6 @@ const UserShema = new mongoose.Schema(
 UserShema.index({ email: 1 }, { unique: true })
 UserShema.index({ email: 1, password: 1 })
 UserShema.index({ _id: 1, username: 1 }, { unique: true })
+UserShema.index({ name: 'text', username: 'text' }, { default_language: 'none' })
 
 export const UserModel = mongoose.model<UserType>('User', UserShema)

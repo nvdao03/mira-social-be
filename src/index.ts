@@ -14,6 +14,7 @@ import { bookmarkRouter } from '~/routes/bookmark.route'
 import { commentRouter } from '~/routes/comment.route'
 import { userRouter } from '~/routes/user.routes'
 import followerRouter from '~/routes/follower.route'
+import { searchRouter } from '~/routes/search.route'
 
 config()
 
@@ -34,6 +35,7 @@ app.use('/bookmarks', bookmarkRouter)
 app.use('/comments', commentRouter)
 app.use('/users', userRouter)
 app.use('/follows', followerRouter)
+app.use('/search', searchRouter)
 app.use('/images', express.static(path.resolve(UPLOAD_IMAGE)))
 app.use('/videos', express.static(path.resolve(UPLOAD_VIDEO)))
 app.use(errorHandler)

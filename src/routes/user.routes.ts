@@ -15,12 +15,12 @@ import { wrapHandler } from '~/utils/wrapHandler'
 export const userRouter = Router()
 
 userRouter.get('/suggestions', accessTokenValidator, wrapHandler(getUserNotFollowerSuggestionsController))
-userRouter.post(
+userRouter.put(
   '/:user_id',
   accessTokenValidator,
   updateProfileValidator,
   verifyUserValidator,
-  filterMiddleware(['name', 'bio', 'location', 'website', 'date_or_birth', 'avatar', 'cover_photo']),
+  filterMiddleware(['name', 'bio', 'location', 'website', 'date_of_birth', 'avatar', 'cover_photo']),
   wrapHandler(updateProfileController)
 )
 userRouter.get('/:id', accessTokenValidator, wrapHandler(getProfileController))

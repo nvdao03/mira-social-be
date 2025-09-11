@@ -118,6 +118,7 @@ class AuthService {
     const user = await UserModel.insertOne({
       ...payload,
       _id: user_id,
+      username: `@${payload.username}`,
       password: hasspassword(payload.password),
       name: handleEmail(payload.email),
       verify: UserVerifyStatus.Unverifyed,
