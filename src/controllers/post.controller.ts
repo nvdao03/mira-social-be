@@ -69,3 +69,21 @@ export const updatePostController = async (
     data: result
   })
 }
+
+export const getPostsFollowing = async (req: Request<any, any, any, PostQuery>, res: Response, next: NextFunction) => {
+  const user_id = req.decoded_authorization?.user_id as string
+  const limit = Number(req.query.limit as string)
+  const page = Number(req.query.page as string)
+  const result = await postService.getPostsFollowing({ user_id, limit, page })
+  return res.status(HTTP_STATUS.OK).json({
+    message: POST_MESSAGE.GET_POSTS_SUCCESSFULLY,
+    data: {
+      posts: result.posts,
+      pagination: {
+        page,
+        limit,
+        total_page: result.total_page
+      }
+    }
+  })
+}

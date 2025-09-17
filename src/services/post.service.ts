@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import { PostTypes } from '~/constants/enums'
 import { POST_MESSAGE } from '~/constants/message'
+import { FollowerModel } from '~/models/follower.model'
 import { PostModel, PostType } from '~/models/post.model'
 import { CreatePostRequest, UpdatePostRequest } from '~/requests/post.request'
 
@@ -269,6 +270,110 @@ class PostService {
       }
     }
     return post
+  }
+
+  async getPostsFollowing({ user_id, page, limit }: { user_id: string; page: number; limit: number }) {
+    const follwings = await FollowerModel.find({ user_id: user_id }).select('followed_user_id') // Lấy ra user mình dã follow
+    const follwingIds = follwings.map((follow) => new mongoose.Types.ObjectId(follow.followed_user_id)) // Lấy id của người mình đã follow
+
+    const posts = await PostModel.aggregate([
+      {
+        $match: {
+          user_id: { $in: follwingIds },
+          parent_id: null
+        }
+      },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'post_id',
+          as: 'likes'
+        }
+      },
+      {
+        $match: {
+          'likes.user_id': { $ne: new mongoose.Types.ObjectId(user_id) }
+        }
+      },
+      {
+        $lookup: {
+          from: 'bookmarks',
+          localField: '_id',
+          foreignField: 'post_id',
+          as: 'bookmarks'
+        }
+      },
+      {
+        $match: {
+          'bookmarks.user_id': { $ne: new mongoose.Types.ObjectId(user_id) }
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'user_id',
+          foreignField: '_id',
+          as: 'users'
+        }
+      },
+      { $unwind: '$users' },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'post_id',
+          as: 'comments'
+        }
+      },
+      {
+        $lookup: {
+          from: 'posts',
+          localField: '_id',
+          foreignField: 'parent_id',
+          as: 'post_children'
+        }
+      },
+      {
+        $addFields: {
+          like_count: { $size: '$likes' },
+          comment_count: { $size: '$comments' },
+          bookmark_count: { $size: '$bookmarks' },
+          repost_count: { $size: '$post_children' }
+        }
+      },
+      { $skip: limit * (page - 1) },
+      { $limit: limit },
+      {
+        $project: {
+          likes: 0,
+          comments: 0,
+          post_children: 0,
+          bookmarks: 0,
+          'users.password': 0,
+          'users.email': 0,
+          'users.email_verify_token': 0,
+          'users.country': 0,
+          'users.createdAt': 0,
+          'users.updatedAt': 0,
+          'users.__v': 0,
+          parent_id: 0,
+          type: 0
+        }
+      }
+    ])
+    const post_ids = posts.map((post) => post._id)
+    await PostModel.updateMany({ _id: { $in: post_ids } }, { $inc: { views: 1 } })
+    posts.forEach((post) => (post.views += 1))
+    const total = await PostModel.countDocuments({
+      user_id: { $in: follwingIds },
+      parent_id: null
+    })
+    const total_page = Math.ceil(total / limit)
+    return {
+      posts,
+      total_page
+    }
   }
 }
 

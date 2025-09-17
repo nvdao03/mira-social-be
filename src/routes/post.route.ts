@@ -4,6 +4,7 @@ import {
   deletePostController,
   getPostDetailController,
   getPostsController,
+  getPostsFollowing,
   updatePostController
 } from '~/controllers/post.controller'
 import { accessTokenValidator, verifyUserValidator } from '~/middlewares/auth.middleware'
@@ -14,6 +15,7 @@ export const postRouter = Router()
 
 postRouter.post('/', accessTokenValidator, verifyUserValidator, createPostValidator, wrapHandler(createPostController))
 postRouter.get('/', accessTokenValidator, wrapHandler(getPostsController))
+postRouter.get('/followings', accessTokenValidator, wrapHandler(getPostsFollowing))
 postRouter.get('/post/:post_id', accessTokenValidator, wrapHandler(getPostDetailController))
 postRouter.delete(
   '/:post_id',
