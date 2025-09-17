@@ -33,12 +33,15 @@
     "typescript-eslint": "^8.39.0"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.890.0",
     "@aws-sdk/client-ses": "^3.888.0",
+    "@aws-sdk/lib-storage": "^3.890.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/formidable": "^3.4.5",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
+    "@types/mime-types": "^3.0.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^4.21.2",
@@ -46,6 +49,7 @@
     "formidable": "^3.5.4",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "mime-types": "^3.0.1",
     "mongoose": "^8.17.0",
     "sharp": "^0.34.3"
   }
