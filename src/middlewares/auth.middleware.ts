@@ -296,14 +296,11 @@ export const verifyForgotPasswordToken = validate(
     {
       forgot_password_token: {
         trim: true,
+        notEmpty: {
+          errorMessage: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_REQUIRED
+        },
         custom: {
           options: async (value, { req }) => {
-            if (!value) {
-              throw new ErrorStatus({
-                status: HTTP_STATUS.UNAUTHORIZED,
-                message: AUTH_MESSAGE.FORGOT_PASSWORD_TOKEN_REQUIRED
-              })
-            }
             try {
               const decoded_forgot_password_token = await verifyToken({
                 token: value,

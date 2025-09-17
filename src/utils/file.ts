@@ -3,7 +3,6 @@ import { UPLOAD_IMAGE, UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO, UPLOAD_VIDEO_TEMP_DI
 import formidable, { File } from 'formidable'
 import { Request } from 'express'
 
-// handler khi chưa có folder uploads thì sẽ tự tạo
 export const initFolder = () => {
   ;[UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_TEMP_DIR].forEach((dir) => {
     if (!fs.existsSync(dir)) {
@@ -15,7 +14,6 @@ export const initFolder = () => {
 }
 
 /* 
-  hander file image
     - files là 1 object, có key là image và value là 1 mảng chứa các object là file
       {
         image: [
@@ -58,9 +56,6 @@ export const handleUploadImage = (req: Request) => {
   })
 }
 
-/*
-  handler file video
-*/
 export const handleUploadVideo = (req: Request) => {
   const form = formidable({
     uploadDir: UPLOAD_VIDEO,
@@ -89,9 +84,6 @@ export const handleUploadVideo = (req: Request) => {
   })
 }
 
-/*
-  handler file avatar
-*/
 export const handleUploadAvatar = (req: Request) => {
   const form = formidable({
     uploadDir: UPLOAD_IMAGE_TEMP_DIR,
@@ -120,9 +112,6 @@ export const handleUploadAvatar = (req: Request) => {
   })
 }
 
-/*
-  handler file cover photo
-*/
 export const handleCoverPhoto = (req: Request) => {
   const form = formidable({
     uploadDir: UPLOAD_IMAGE_TEMP_DIR,

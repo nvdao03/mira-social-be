@@ -21,7 +21,7 @@ export const AUTH_MESSAGE = {
   LOGOUT_SUCCESSFULLY: 'Logout successfully',
   REFRESH_TOKEN_SUCCESSFULLY: 'Refresh token successfully',
   EMAIL_VERIFY_TOKEN_REQUIRED: 'Email verify token is required',
-  EMAIL_VERIFY_TOKEN_NOT_FOUND: 'Email verify token not found',
+  EMAIL_VERIFY_TOKEN_NOT_FOUND: 'Email verify not found',
   EMAIL_VERIFIED_SUCCESSFULLY: 'Email verified successfully',
   EMAIL_VERIFIED_BEFORE: 'Email verified before',
   FORGOT_PASSWORD_SUCCESSFULLY: 'Forgot password successfully',

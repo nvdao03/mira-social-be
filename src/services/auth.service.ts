@@ -9,6 +9,7 @@ import { SignUpRequestBody } from '~/requests/auth.request'
 import hasspassword from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
 import { handleEmail } from '~/utils/other'
+import { sendResetPassword, sendVerifyEmail } from '~/utils/email'
 
 config()
 
@@ -138,6 +139,10 @@ class AuthService {
       iat: new Date(decoded_refresh_token.iat * 1000),
       exp: new Date(decoded_refresh_token.exp * 1000)
     })
+    await sendVerifyEmail({
+      toAddresses: payload.email,
+      email_verify_token: email_verify_token
+    })
     return {
       access_token,
       refresh_token,
@@ -236,14 +241,14 @@ class AuthService {
     await UserModel.findByIdAndUpdate(user._id, {
       forgot_password_token: forgot_password_token
     })
-    console.log('forgot_password_token', forgot_password_token)
+    await sendResetPassword({ toAddresses: user.email, forgot_password_token: forgot_password_token })
     return {
       message: AUTH_MESSAGE.FORGOT_PASSWORD_SUCCESSFULLY
     }
   }
 
   async resetPassword({ user_id, password }: { user_id: string; password: string }) {
-    const result = await UserModel.findByIdAndUpdate(
+    await UserModel.findByIdAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(user_id)
       },
@@ -261,7 +266,7 @@ class AuthService {
   }
 
   async changePassword({ user_id, new_password }: { user_id: string; new_password: string }) {
-    const result = await UserModel.findByIdAndUpdate(
+    await UserModel.findByIdAndUpdate(
       {
         _id: new mongoose.Types.ObjectId(user_id)
       },
