@@ -1,0 +1,806 @@
+openapi: 3.0.0
+info:
+  title: Mira Social Network
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000
+components:
+  securitySchemes:
+    noauthAuth:
+      type: http
+      scheme: noauth
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: Auth
+  - name: User
+  - name: Media
+  - name: Post
+  - name: Like
+  - name: Bookmark
+  - name: Comment
+  - name: Follower
+  - name: Search
+paths:
+  /auth/sign-up:
+    post:
+      tags:
+        - Auth
+      summary: Sign Up
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: nvdao003+100@gmail.com
+                password: '12345678'
+                username: nvdao003+15
+                country: VietNam
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/sign-in:
+    post:
+      tags:
+        - Auth
+      summary: Sign In
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: '{{email}}'
+                password: '{{password}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                refresh_token: '{{refresh_token}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/refresh-token:
+    post:
+      tags:
+        - Auth
+      summary: Refresh Token
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                refresh_token: '{{refresh_token}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/verify-email:
+    post:
+      tags:
+        - Auth
+      summary: Verify Email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email_verify_token: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjhjYWQxNTk0OGY5NTBhNzFiZGQyM2Q3IiwidG9rZW5fdHlwZSI6MywidmVyaWZ5IjowLCJpYXQiOjE3NTgxMjIzMjksImV4cCI6MTc1ODk4NjMyOX0.vJWs2pN4BZr6rSoGL0YcsleFM2f2-BYL4t4Oz8JjStg
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Forgot Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: nvdao003@gmail.com
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/reset-password:
+    post:
+      tags:
+        - Auth
+      summary: Reset Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                password: '123456789'
+                confirm_password: '123456789'
+                forgot_password_token: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjhjYTIzYTBhOTEyZDk1YmQ2ZWRkMzk0IiwidG9rZW5fdHlwZSI6MiwidmVyaWZ5IjoxLCJpYXQiOjE3NTgyMDM5NzksImV4cCI6MTc1ODgwODc3OX0.Svf8MenjhSPWHj5f1OKavDESQ_rHaK04QbPhXKCIpxI
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/change-password:
+    post:
+      tags:
+        - Auth
+      summary: Chage Password
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                current_password: '123456789'
+                new_password: '12345678'
+                confirm_password: '12345678'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /auth/verify-forgot-password:
+    post:
+      tags:
+        - Auth
+      summary: Verify Forgot Password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                forgot_password_token: >-
+                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjhjYTIzYTBhOTEyZDk1YmQ2ZWRkMzk0IiwidG9rZW5fdHlwZSI6MiwidmVyaWZ5IjoxLCJpYXQiOjE3NTgyMDM5NzksImV4cCI6MTc1ODgwODc3OX0.Svf8MenjhSPWHj5f1OKavDESQ_rHaK04QbPhXKCIpxI
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /users/suggestions:
+    get:
+      tags:
+        - User
+      summary: Get User Suggestions
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /users/{user_id}:
+    get:
+      tags:
+        - User
+      summary: Get Profile
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - User
+      summary: Update Profile
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Nguyễn Văn Thành
+                bio: Phùng Hưng - Hưng Yên
+                location: Hà Nội
+                website: https:vanthanh.com.vn
+                date_or_birth: 30/07/2003
+                avatar: ''
+                cover_photo: ''
+      parameters:
+        - name: user_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /medias/upload-image:
+    post:
+      tags:
+        - Media
+      summary: Upload Image
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /medias/upload-video:
+    post:
+      tags:
+        - Media
+      summary: Upload Video
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                video:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /medias/upload-avatar:
+    post:
+      tags:
+        - Media
+      summary: Upload Avatar
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /medias/upload-cover-photo:
+    post:
+      tags:
+        - Media
+      summary: Upload Cover Photo
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /posts:
+    post:
+      tags:
+        - Post
+      summary: Create Post
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: '0'
+                user_id: '{{user_id}}'
+                content: Hello
+                medias:
+                  - url: http://localhost:4000/videos/aiyq5tts0b391jdj74ls8op7p.mp4
+                    type: 1
+                parent_id: null
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Post
+      summary: Get Posts
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /users/{user_id}/posts:
+    get:
+      tags:
+        - Post
+      summary: Get Posts Profile
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: user_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /users/{user_id}/likes:
+    get:
+      tags:
+        - Post
+      summary: Get Like Posts Profile
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: user_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /posts/post/{post_id}:
+    get:
+      tags:
+        - Post
+      summary: Get Post Detail
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: post_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /posts/{post_id}:
+    delete:
+      tags:
+        - Post
+      summary: Delete Post
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: post_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Post
+      summary: Update Post
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: '0'
+                user_id: '{{user_id}}'
+                content: Hello bạn
+                medias:
+                  - url: http://localhost:4000/videos/aiyq5tts0b391jdj74ls8op7p.mp4
+                    type: 1
+                parent_id: null
+      parameters:
+        - name: post_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /posts/followings:
+    get:
+      tags:
+        - Post
+      summary: Get Post Follwings
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '2'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /likes:
+    post:
+      tags:
+        - Like
+      summary: Like Post
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                post_id: 68aca74ef89589f2e32b06a9
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /likes/post/{post_id}:
+    delete:
+      tags:
+        - Like
+      summary: UnLike Post
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: post_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /bookmarks:
+    post:
+      tags:
+        - Bookmark
+      summary: Bookmark
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                post_id: 68aca74ef89589f2e32b06a9
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Bookmark
+      summary: Get All Bookmarks
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /comments/{post_id}:
+    post:
+      tags:
+        - Comment
+      summary: Create Comment
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                content: Khá là hoàn hảo !
+      parameters:
+        - name: post_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /comments/post/{post_id}:
+    get:
+      tags:
+        - Comment
+      summary: Get All Comment Post
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: post_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /comments/{comment_id}:
+    delete:
+      tags:
+        - Comment
+      summary: Delete Comment
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: comment_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /follows:
+    post:
+      tags:
+        - Follower
+      summary: Follow
+      security:
+        - noauthAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                followed_user_id: 68a88daded41cfa9235d9367
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /followers/user{followed_user_id}:
+    delete:
+      tags:
+        - Follower
+      summary: Un Follow
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: followed_user_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /follows/{user_id}/followers:
+    get:
+      tags:
+        - Follower
+      summary: Get Followers
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: user_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /follows/{user_id}/followings:
+    get:
+      tags:
+        - Follower
+      summary: Get Following
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: user_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /search/:
+    get:
+      tags:
+        - Search
+      summary: Search
+      parameters:
+        - name: key
+          in: query
+          schema:
+            type: string
+          example: VanDao
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

@@ -1,5 +1,8 @@
 import { config } from 'dotenv'
 import express from 'express'
+import fs from 'fs'
+import swaggerUi from 'swagger-ui-express'
+import YAML from 'yaml'
 import cors from 'cors'
 import mongodbConfig from '~/configs/mongodb.config'
 import errorHandler from '~/middlewares/error.middleware'
@@ -23,10 +26,17 @@ const PORT = process.env.PORT || 4000
 const app = express()
 
 mongodbConfig.connect()
+
 app.use(express.json())
+
 app.use(cors())
+
 initFolder()
 
+const file = fs.readFileSync(path.resolve('mira-swagger.yaml'), 'utf-8')
+const swaggerDocument = YAML.parse(file)
+
+app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/auth', authRouter)
 app.use('/medias', mediaRouter)
 app.use('/posts', postRouter)

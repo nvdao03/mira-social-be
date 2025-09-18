@@ -42,6 +42,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.20",
     "@types/mime-types": "^3.0.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^4.21.2",
@@ -51,6 +53,10 @@
     "lodash": "^4.17.21",
     "mime-types": "^3.0.1",
     "mongoose": "^8.17.0",
-    "sharp": "^0.34.3"
+    "postman-to-openapi": "^1.7.3",
+    "sharp": "^0.34.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.8.1"
   }
 }

@@ -2,3 +2,4 @@ node_modules/
 dist/
 .env
 document.doc
+mira-swagger-code.yaml
