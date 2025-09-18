@@ -2,7 +2,6 @@ import { UserModel, UserType } from './../models/user.model'
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import mongoose from 'mongoose'
-import { UserVerifyStatus } from '~/constants/enums'
 import { HTTP_STATUS } from '~/constants/httpStatus'
 import { AUTH_MESSAGE, USER_MESSAGE } from '~/constants/message'
 import {
