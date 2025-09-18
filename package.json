@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npx nodemon",
-    "build": "rm -rf ./dist && tsc --noCheck && tsc-alias",
+    "build": "rimraf ./dist && tsc --noCheck && tsc-alias",
     "start": "node dist/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -26,13 +26,13 @@
     "globals": "^16.3.0",
     "nodemon": "^3.1.10",
     "prettier": "^3.6.2",
-    "rimraf": "^6.0.1",
-    "tsc-alias": "^1.8.16",
     "tsx": "^4.20.3",
-    "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.0"
   },
   "dependencies": {
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5.9.2",
+    "rimraf": "^6.0.1",
     "@aws-sdk/client-s3": "^3.890.0",
     "@aws-sdk/client-ses": "^3.888.0",
     "@aws-sdk/lib-storage": "^3.890.0",
