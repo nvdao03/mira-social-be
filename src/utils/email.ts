@@ -1,9 +1,7 @@
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses'
-import { config } from 'dotenv'
+import '../configs/env.config'
 import fs from 'fs'
 import path from 'path'
-
-config()
 
 const sesClient = new SESClient({
   region: process.env.AWS_REGION as string,

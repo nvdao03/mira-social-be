@@ -1,9 +1,7 @@
 import { S3Client } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
-import { config } from 'dotenv'
+import '../configs/env.config'
 import fs from 'fs'
-
-config()
 
 const s3client = new S3Client({
   region: process.env.AWS_REGION as string,

@@ -1,4 +1,4 @@
-import { config } from 'dotenv'
+import './configs/env.config'
 import express from 'express'
 import fs from 'fs'
 import swaggerUi from 'swagger-ui-express'
@@ -18,8 +18,6 @@ import { commentRouter } from '~/routes/comment.route'
 import { userRouter } from '~/routes/user.routes'
 import followerRouter from '~/routes/follower.route'
 import { searchRouter } from '~/routes/search.route'
-
-config()
 
 const PORT = process.env.PORT || 4000
 
@@ -55,5 +53,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })

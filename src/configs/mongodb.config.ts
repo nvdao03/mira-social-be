@@ -1,8 +1,5 @@
-import { config } from 'dotenv'
+import '../configs/env.config'
 import mongoose from 'mongoose'
-
-config()
-
 const URL = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@mira-social.3gugumn.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Mira-Social`
 
 class MongoDBConfig {

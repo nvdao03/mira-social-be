@@ -1,5 +1,4 @@
-import { verify } from 'node:crypto'
-import { config } from 'dotenv'
+import '../configs/env.config'
 import mongoose from 'mongoose'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enums'
 import { AUTH_MESSAGE } from '~/constants/message'
@@ -10,8 +9,6 @@ import hasspassword from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
 import { handleEmail } from '~/utils/other'
 import { sendResetPassword, sendVerifyEmail } from '~/utils/email'
-
-config()
 
 class AuthService {
   private async signAccessToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
