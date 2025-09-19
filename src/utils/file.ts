@@ -32,7 +32,7 @@ export const handleUploadImage = (req: Request) => {
   const form = formidable({
     uploadDir: UPLOAD_IMAGE_TEMP_DIR,
     maxFiles: 1,
-    maxFileSize: 1 * 1024 * 1024, // 1MB
+    maxFileSize: 4 * 1024 * 1024, // 4MB
     keepExtensions: true,
     filter: ({ name, originalFilename, mimetype }) => {
       const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
@@ -43,15 +43,28 @@ export const handleUploadImage = (req: Request) => {
     }
   })
   return new Promise<File[]>((resolve, reject) => {
+    const uploadedFiles: File[] = []
+
+    form.on('file', (_, file) => {
+      uploadedFiles.push(file)
+    })
+
     form.parse(req, (err, field, files) => {
-      if (err) {
-        return reject(err)
-      }
+      if (err) return reject(err)
       // eslint-disable-next-line no-extra-boolean-cast
       if (!Boolean(files.image)) {
         return reject(new Error('No file'))
       }
+      uploadedFiles.length = 0
       resolve(files.image as File[])
+    })
+
+    req.on('close', () => {
+      if (uploadedFiles.length > 0) {
+        uploadedFiles.forEach((file) => {
+          fs.unlinkSync(file.filepath)
+        })
+      }
     })
   })
 }
@@ -71,15 +84,28 @@ export const handleUploadVideo = (req: Request) => {
     }
   })
   return new Promise<File[]>((resolve, reject) => {
+    const uploadedFiles: File[] = []
+
+    form.on('file', (_, file) => {
+      uploadedFiles.push(file)
+    })
+
     form.parse(req, (err, field, files) => {
-      if (err) {
-        reject(err)
-      }
+      if (err) return reject(err)
       // eslint-disable-next-line no-extra-boolean-cast
       if (!Boolean(files.video)) {
         return reject(new Error('No file'))
       }
+      uploadedFiles.length = 0
       return resolve(files.video as File[])
+    })
+
+    req.on('close', () => {
+      if (uploadedFiles.length > 0) {
+        uploadedFiles.forEach((file) => {
+          fs.unlinkSync(file.filepath)
+        })
+      }
     })
   })
 }
@@ -88,7 +114,7 @@ export const handleUploadAvatar = (req: Request) => {
   const form = formidable({
     uploadDir: UPLOAD_IMAGE_TEMP_DIR,
     maxFiles: 1,
-    maxFileSize: 1 * 1024 * 1024, // 1MB
+    maxFileSize: 4 * 1024 * 1024, // 4MB
     keepExtensions: true,
     filter: ({ name, originalFilename, mimetype }) => {
       const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
@@ -99,15 +125,28 @@ export const handleUploadAvatar = (req: Request) => {
     }
   })
   return new Promise<File[]>((resolve, reject) => {
+    const uploadedFiles: File[] = []
+
+    form.on('file', (_, file) => {
+      uploadedFiles.push(file)
+    })
+
     form.parse(req, (err, field, files) => {
-      if (err) {
-        reject(err)
-      }
+      if (err) return reject(err)
       // eslint-disable-next-line no-extra-boolean-cast
       if (!Boolean(files.image)) {
         return reject(new Error('No file'))
       }
-      return resolve(files.image as File[])
+      uploadedFiles.length = 0
+      resolve(files.image as File[])
+    })
+
+    req.on('close', () => {
+      if (uploadedFiles.length > 0) {
+        uploadedFiles.forEach((file) => {
+          fs.unlinkSync(file.filepath)
+        })
+      }
     })
   })
 }
@@ -116,7 +155,7 @@ export const handleCoverPhoto = (req: Request) => {
   const form = formidable({
     uploadDir: UPLOAD_IMAGE_TEMP_DIR,
     maxFiles: 1,
-    maxFileSize: 1 * 1024 * 1024, // 1MB
+    maxFileSize: 4 * 1024 * 1024, // 4MB
     keepExtensions: true,
     filter: ({ name, originalFilename, mimetype }) => {
       const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
@@ -127,15 +166,28 @@ export const handleCoverPhoto = (req: Request) => {
     }
   })
   return new Promise<File[]>((resolve, reject) => {
+    const uploadedFiles: File[] = []
+
+    form.on('file', (_, file) => {
+      uploadedFiles.push(file)
+    })
+
     form.parse(req, (err, field, files) => {
-      if (err) {
-        reject(err)
-      }
+      if (err) return reject(err)
       // eslint-disable-next-line no-extra-boolean-cast
       if (!Boolean(files.image)) {
         return reject(new Error('No file'))
       }
-      return resolve(files.image as File[])
+      uploadedFiles.length = 0
+      resolve(files.image as File[])
+    })
+
+    req.on('close', () => {
+      if (uploadedFiles.length > 0) {
+        uploadedFiles.forEach((file) => {
+          fs.unlinkSync(file.filepath)
+        })
+      }
     })
   })
 }
