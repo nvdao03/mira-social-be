@@ -3,6 +3,7 @@ info:
   title: Mira Social Network
   version: 1.0.0
 servers:
+  - url: https://mira-social-be.onrender.com
   - url: http://localhost:4000
 components:
   securitySchemes:
