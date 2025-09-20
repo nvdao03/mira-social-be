@@ -102,7 +102,7 @@ npm run dev
 
 ## 📄 Document API
 
-- [https://mira-social-be.onrender.com/api-doc/](`https://mira-social-be.onrender.com/api-doc/`)
+- [https://mira-social-be.onrender.com/api-doc/](https://mira-social-be.onrender.com/api-doc/)
 
 ## 🗄️ Database Schema
 
