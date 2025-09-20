@@ -124,7 +124,7 @@ npm run dev
 | `website`                 | String | Website cá nhân.                                              |
 | `avatar`                  | String | Ảnh đại diện.                                                 |
 | `cover_photo`             | String | Ảnh bìa.                                                      |
-| `createdAt` / `updatedAt` | Date   | Tự động thêm bởi.                                             |
+| `createdAt` / `updatedAt` | Date   | Tự động thêm.                                                 |
 
 ---
 
@@ -195,4 +195,4 @@ npm run dev
 
 ### 👨‍💻 Author
 
-Developed by Nguyễn Văn Đạo 🚀
+Developed by [Nguyễn Văn Đạo](https://www.facebook.com/van.ao.547278) 🚀
