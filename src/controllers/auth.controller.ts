@@ -16,6 +16,7 @@ import {
 } from '~/requests/auth.request'
 import authService from '~/services/auth.service'
 import { ErrorStatus } from '~/utils/Errors'
+import '../configs/env.config'
 
 export const signUpController = async (
   req: Request<ParamsDictionary, any, SignUpRequestBody>,
@@ -63,6 +64,13 @@ export const signInController = async (
       }
     }
   })
+}
+
+export const oauthController = async (req: Request, res: Response, next: NextFunction) => {
+  const { code } = req.query
+  const { access_token, refresh_token, user } = await authService.oauth(code as string)
+  const urlRedirect = `${process.env.GOOGLE_CLIENT_REDIRECT_URL}?access_token=${access_token}&refresh_token=${refresh_token}&id=${user._id.toString()}&email=${encodeURIComponent(user.email)}&username=${encodeURIComponent(user.username)}&name=${encodeURIComponent(user.name)}&avatar=${encodeURIComponent(user.avatar || '')}`
+  return res.redirect(urlRedirect)
 }
 
 export const logoutController = async (

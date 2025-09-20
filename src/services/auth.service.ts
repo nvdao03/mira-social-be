@@ -1,5 +1,5 @@
 import '../configs/env.config'
-import mongoose from 'mongoose'
+import mongoose, { Mongoose } from 'mongoose'
 import { TokenTypes, UserVerifyStatus } from '~/constants/enums'
 import { AUTH_MESSAGE } from '~/constants/message'
 import { RefreshTokenModel } from '~/models/refresh-token.model'
@@ -9,6 +9,10 @@ import hasspassword from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
 import { handleEmail } from '~/utils/other'
 import { sendResetPassword, sendVerifyEmail } from '~/utils/email'
+import axios from 'axios'
+import { header } from 'express-validator'
+import { ErrorStatus } from '~/utils/Errors'
+import { HTTP_STATUS } from '~/constants/httpStatus'
 
 class AuthService {
   private async signAccessToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
@@ -168,6 +172,112 @@ class AuthService {
       access_token,
       refresh_token,
       user_res: user_res!
+    }
+  }
+
+  private async getOauthToken(code: string) {
+    const body = {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI,
+      grant_type: 'authorization_code'
+    }
+
+    const { data } = await axios.post('https://oauth2.googleapis.com/token', body, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+
+    return data as {
+      id_token: string
+      access_token: string
+    }
+  }
+
+  private async getOauthUserInfo(access_token: string, id_token: string) {
+    const { data } = await axios.get('https://www.googleapis.com/oauth2/v1/userinfo', {
+      params: {
+        access_token,
+        alt: 'json'
+      },
+      headers: {
+        Authorization: `Bearer ${id_token}`
+      }
+    })
+    return data as {
+      id: string
+      email: string
+      verified_email: boolean
+      name: string
+      given_name: string
+      family_name: string
+      picture: string
+    }
+  }
+
+  async oauth(code: string) {
+    const { access_token, id_token } = await this.getOauthToken(code)
+    const userInfo = await this.getOauthUserInfo(access_token, id_token)
+    if (!userInfo.verified_email) {
+      throw new ErrorStatus({
+        status: HTTP_STATUS.BAD_REQUEST,
+        message: AUTH_MESSAGE.GMAIL_NOT_VERIFIED
+      })
+    }
+    const user = await UserModel.findOne({ email: userInfo.email })
+    if (user) {
+      const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken({
+        user_id: user._id.toString(),
+        verify: user.verify
+      })
+      const decoded_refresh_token = await verifyToken({
+        token: refresh_token,
+        secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+      })
+      await RefreshTokenModel.insertOne({
+        token: refresh_token,
+        user_id: user._id,
+        iat: new Date(decoded_refresh_token.iat * 1000),
+        exp: new Date(decoded_refresh_token.exp * 1000)
+      })
+      return {
+        access_token,
+        refresh_token,
+        user
+      }
+    } else {
+      const password = Math.random().toString(36).substring(2, 15)
+      const user = await UserModel.create({
+        email: userInfo.email,
+        password: hasspassword(password),
+        name: userInfo.name,
+        avatar: userInfo.picture,
+        username: `@${handleEmail(userInfo.email)}`,
+        verify: UserVerifyStatus.Verifyed,
+        country: ''
+      })
+      user.save()
+      const [access_token, refresh_token] = await this.signAccessTokenAndRefreshToken({
+        user_id: user._id.toString(),
+        verify: UserVerifyStatus.Verifyed
+      })
+      const decoded_refresh_token = await verifyToken({
+        token: refresh_token,
+        secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+      })
+      await RefreshTokenModel.insertOne({
+        token: refresh_token,
+        user_id: user._id,
+        iat: new Date(decoded_refresh_token.iat * 1000),
+        exp: new Date(decoded_refresh_token.exp * 1000)
+      })
+      return {
+        access_token,
+        refresh_token,
+        user: user
+      }
     }
   }
 

@@ -3,6 +3,7 @@ import {
   changePasswordController,
   forgotPasswordController,
   logoutController,
+  oauthController,
   refreshTokenController,
   resetPasswordController,
   signInController,
@@ -27,6 +28,7 @@ const authRouter = Router()
 
 authRouter.post('/sign-up', signUpValidation, wrapHandler(signUpController))
 authRouter.post('/sign-in', signInValidation, wrapHandler(signInController))
+authRouter.get('/oauth/google', wrapHandler(oauthController))
 authRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapHandler(logoutController))
 authRouter.post('/refresh-token', refreshTokenValidator, wrapHandler(refreshTokenController))
 authRouter.post('/verify-email', verifyEmailValidator, wrapHandler(verifyEmailController))

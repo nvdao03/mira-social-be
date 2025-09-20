@@ -41,7 +41,9 @@ export const AUTH_MESSAGE = {
   CHANGE_PASSWORD_SUCCESSFULLY: 'Change password successfully',
   NEW_PASSWORD_LENGTH: 'New password must be at least 6 to 180 characters',
   NEW_PASSWORD_REQUIRED: 'New password is required',
-  CURRENT_PASSWORD_NOT_MATCH: 'Current password not match'
+  CURRENT_PASSWORD_NOT_MATCH: 'Current password not match',
+  OAUTH_SUCCESSFULLY: 'OAuth successfully',
+  GMAIL_NOT_VERIFIED: 'Gmail not verified'
 }
 
 export const USER_MESSAGE = {
