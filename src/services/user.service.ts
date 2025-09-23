@@ -5,12 +5,9 @@ import { UpdateProfileRequestBody } from '~/requests/user.request'
 
 class UserService {
   async getUserNotFollowerSuggestions({ limit, page, user_id }: { user_id: string; limit: number; page: number }) {
-    const users = await UserModel.aggregate<UserType>([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(user_id)
-        }
-      },
+    const users = await UserModel.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(user_id) } },
+
       {
         $lookup: {
           from: 'followers',
@@ -31,26 +28,19 @@ class UserService {
         }
       },
       {
+        $addFields: {
+          followedIds: { $concatArrays: ['$followedIds', ['$_id']] }
+        }
+      },
+      {
         $lookup: {
           from: 'users',
-          let: {
-            myId: '$_id',
-            followed: '$followedIds'
-          },
+          let: { followed: '$followedIds' },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $and: [
-                    {
-                      $ne: ['$_id', '$$myId']
-                    },
-                    {
-                      $not: {
-                        $in: ['$_id', '$$followed']
-                      }
-                    }
-                  ]
+                  $not: { $in: ['$_id', '$$followed'] }
                 }
               }
             }
@@ -64,23 +54,25 @@ class UserService {
           _id: 0
         }
       },
+      { $unwind: '$unfollowed_users' },
       {
-        $unwind: {
-          path: '$unfollowed_users'
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: [{ $skip: limit * (page - 1) }, { $limit: limit }]
         }
       },
+      { $unwind: '$metadata' },
       {
-        $skip: limit * (page - 1)
-      },
-      {
-        $limit: limit
+        $addFields: {
+          total_page: {
+            $ceil: { $divide: ['$metadata.total', limit] }
+          }
+        }
       }
     ])
-    const total = await UserModel.countDocuments()
-    const total_page = Math.ceil(total / limit)
     return {
-      users,
-      total_page
+      users: users[0]?.data || [],
+      total_page: users[0]?.total_page || 0
     }
   }
 
@@ -240,8 +232,10 @@ class UserService {
     page: number
     user_id_login: string
   }) {
-    const posts = await PostModel.aggregate<PostType>([
-      // Join với bảng likes để lấy ra toàn bộ like của post
+    const userObjectId = new mongoose.Types.ObjectId(user_id)
+    const loginObjectId = new mongoose.Types.ObjectId(user_id_login)
+
+    const result = await PostModel.aggregate([
       {
         $lookup: {
           from: 'likes',
@@ -250,92 +244,68 @@ class UserService {
           as: 'likes'
         }
       },
-      // Chỉ giữ post mà user mình đang xem profile đã like
+      // Lọc post mà user đã like
+      { $match: { 'likes.user_id': userObjectId } },
+      // Gom dữ liệu
       {
-        $match: {
-          'likes.user_id': new mongoose.Types.ObjectId(user_id)
-        }
-      },
-      // Join user (chủ post)
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'user_id',
-          foreignField: '_id',
-          as: 'users'
-        }
-      },
-      { $unwind: '$users' },
-      // Join comments
-      {
-        $lookup: {
-          from: 'comments',
-          localField: '_id',
-          foreignField: 'post_id',
-          as: 'comments'
-        }
-      },
-      // Join bookmarks
-      {
-        $lookup: {
-          from: 'bookmarks',
-          localField: '_id',
-          foreignField: 'post_id',
-          as: 'bookmarks'
-        }
-      },
-      // Join reposts
-      {
-        $lookup: {
-          from: 'posts',
-          localField: '_id',
-          foreignField: 'parent_id',
-          as: 'post_children'
-        }
-      },
-      // Add các field cần thiết
-      {
-        $addFields: {
-          like_count: { $size: '$likes' },
-          comment_count: { $size: '$comments' },
-          bookmark_count: { $size: '$bookmarks' },
-          repost_count: { $size: '$post_children' },
-          // Kiểm tra currentUser đã like chưa
-          isLiked: {
-            $in: [new mongoose.Types.ObjectId(user_id_login), '$likes.user_id']
-          },
-          // Kiểm tra currentUser đã bookmark chưa
-          isBookmarked: {
-            $in: [new mongoose.Types.ObjectId(user_id_login), '$bookmarks.user_id']
-          }
-        }
-      },
-      { $skip: limit * (page - 1) },
-      { $limit: limit },
-      {
-        $project: {
-          likes: 0,
-          post_children: 0,
-          bookmarks: 0,
-          comments: 0,
-          'users.password': 0,
-          'users.email': 0,
-          'users.email_verify_token': 0,
-          'users.country': 0,
-          'users.createdAt': 0,
-          'users.updatedAt': 0,
-          'users.__v': 0,
-          parent_id: 0,
-          type: 0
+        $facet: {
+          posts: [
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'user_id',
+                foreignField: '_id',
+                as: 'users'
+              }
+            },
+            { $unwind: '$users' },
+            { $lookup: { from: 'comments', localField: '_id', foreignField: 'post_id', as: 'comments' } },
+            { $lookup: { from: 'bookmarks', localField: '_id', foreignField: 'post_id', as: 'bookmarks' } },
+            { $lookup: { from: 'posts', localField: '_id', foreignField: 'parent_id', as: 'post_children' } },
+            {
+              $addFields: {
+                like_count: { $size: '$likes' },
+                comment_count: { $size: '$comments' },
+                bookmark_count: { $size: '$bookmarks' },
+                repost_count: { $size: '$post_children' },
+                isLiked: {
+                  $in: [loginObjectId, { $map: { input: '$likes', as: 'l', in: '$$l.user_id' } }]
+                },
+                isBookmarked: {
+                  $in: [loginObjectId, { $map: { input: '$bookmarks', as: 'b', in: '$$b.user_id' } }]
+                }
+              }
+            },
+            { $skip: limit * (page - 1) },
+            { $limit: limit },
+            {
+              $project: {
+                likes: 0,
+                post_children: 0,
+                bookmarks: 0,
+                comments: 0,
+                'users.password': 0,
+                'users.email': 0,
+                'users.email_verify_token': 0,
+                'users.country': 0,
+                'users.createdAt': 0,
+                'users.updatedAt': 0,
+                'users.__v': 0,
+                parent_id: 0,
+                type: 0
+              }
+            }
+          ],
+          total: [{ $count: 'count' }]
         }
       }
     ])
-    const total = await PostModel.countDocuments()
-    const total_page = Math.ceil(total / limit)
-    return {
-      posts,
-      total_page
-    }
+
+    const posts = result[0]?.posts || []
+    const totalCount = result[0]?.total[0]?.count || 0
+    const total_page = Math.ceil(totalCount / limit)
+
+    return { posts, total_page }
   }
 
   async updateProfile({ user_id, body }: { user_id: string; body: UpdateProfileRequestBody }) {

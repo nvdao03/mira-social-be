@@ -333,6 +333,16 @@ class AuthService {
       user_id,
       verify: UserVerifyStatus.Verifyed
     })
+    const decoded_refresh_token = await verifyToken({
+      token: refresh_token,
+      secretOrPublicKey: process.env.JWT_SECRET_REFRESH_TOKEN as string
+    })
+    await RefreshTokenModel.insertOne({
+      user_id: new mongoose.Types.ObjectId(user_id),
+      token: refresh_token,
+      iat: new Date(decoded_refresh_token.iat * 1000),
+      exp: new Date(decoded_refresh_token.exp * 1000)
+    })
     return {
       access_token,
       refresh_token,

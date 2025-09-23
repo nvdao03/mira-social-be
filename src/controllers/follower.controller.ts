@@ -59,7 +59,7 @@ export const getFollowingsController = async (req: Request, res: Response, next:
   return res.status(HTTP_STATUS.OK).json({
     message: FOLLOWER_MESSAGE.GET_FOLLOWINGS_SUCCESSFULLY,
     data: {
-      followers: result.following,
+      followings: result.following,
       pagination: {
         page,
         limit,
