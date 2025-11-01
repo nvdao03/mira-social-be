@@ -8,6 +8,7 @@ import { commentRouter } from '~/routes/comment.route'
 import { userRouter } from '~/routes/user.routes'
 import followerRouter from '~/routes/follower.route'
 import { searchRouter } from '~/routes/search.route'
+import healthRouter from '~/routes/health.route'
 
 const router = Router()
 
@@ -20,5 +21,6 @@ router.use('/comments', commentRouter)
 router.use('/users', userRouter)
 router.use('/follows', followerRouter)
 router.use('/search', searchRouter)
+router.use('/health', healthRouter)
 
 export default router
